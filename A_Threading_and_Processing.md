@@ -20,15 +20,15 @@
 
 ## 🗺️ Übersicht
 
-| Block | Thema | Zeit (ca.) |
-|-------|-------|-----------|
-| A | Concurrency vs. Parallelism – die Grundbegriffe | 15 Min |
-| B | Threads in Python – `threading`-Modul | 20 Min |
-| C | Thread-Safety & Locks | 15 Min |
-| D | Der GIL – Pythons große Einschränkung | 10 Min |
-| E | Multiprocessing – echter Parallelismus | 20 Min |
-| F | Queues – Kommunikation zwischen Threads/Prozessen | 15 Min |
-| G | Abschlussprojekt – wähle eine Aufgabe | 15 Min |
+| Block | Thema |
+|-------|-------|
+| A | Concurrency vs. Parallelism – die Grundbegriffe 
+| B | Threads in Python – `threading`-Modul
+| C | Thread-Safety & Locks
+| D | Der GIL – Pythons große Einschränkung
+| E | Multiprocessing – echter Parallelismus
+| F | Queues – Kommunikation zwischen Threads/Prozessen
+| G | Abschlussprojekt – wähle eine Aufgabe
 
 ---
 
