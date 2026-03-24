@@ -1,0 +1,43 @@
+import time
+
+# ─────────────────────────────────────────────────────────────
+# IO-BOUND Aufgabe: Warten simulieren (z.B. Netzwerk-Anfrage)
+# In der Realität würde hier ein requests.get() stehen
+# ─────────────────────────────────────────────────────────────
+def io_aufgabe(name):
+    """Simuliert eine Aufgabe die viel wartet (z.B. API-Call)."""
+    print(f"[{name}] Starte IO-Aufgabe (warte 2 Sekunden)...")
+    time.sleep(2)  # Simuliert Wartezeit (Netzwerk, Datei, DB)
+    print(f"[{name}] IO-Aufgabe fertig!")
+
+
+# ─────────────────────────────────────────────────────────────
+# CPU-BOUND Aufgabe: Intensives Rechnen
+# ─────────────────────────────────────────────────────────────
+def cpu_aufgabe(name, n=10_000_000):
+    """Simuliert eine CPU-intensive Aufgabe."""
+    print(f"[{name}] Starte CPU-Aufgabe ({n:,} Berechnungen)...")
+    ergebnis = 0
+    for i in range(n):
+        ergebnis += i * i  # Sinnlos aber rechenintensiv
+    print(f"[{name}] CPU-Aufgabe fertig! Ergebnis: {ergebnis}")
+    return ergebnis
+
+
+# ─────────────────────────────────────────────────────────────
+# SEQUENZIELL: Aufgaben nacheinander ausführen
+# ─────────────────────────────────────────────────────────────
+print("=" * 50)
+print("Test: 3x IO-Aufgaben SEQUENZIELL")
+print("=" * 50)
+start = time.time()
+
+io_aufgabe("Task-1")
+io_aufgabe("Task-2")
+io_aufgabe("Task-3")
+
+cpu_aufgabe("CPU-Task")
+
+dauer = time.time() - start
+print(f"\n⏱ Dauer sequenziell: {dauer:.2f} Sekunden")
+print(f"  Erwartung: ~6 Sekunden (3 × 2 Sek)")
