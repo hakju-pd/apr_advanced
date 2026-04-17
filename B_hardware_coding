@@ -1,0 +1,1356 @@
+# APR Advanced – 2CK
+
+**Klasse:** 2CK | **Semester:** 2  
+**Thema:** Hardwarenahe Programmierung – Von den Anfängen bis zu C
+
+---
+
+> 📖 **So arbeitest du mit diesen Unterlagen:**
+>
+> Diese Unterlagen verbinden **Geschichte**, **Theorie** und **echte Erfahrung** miteinander.
+> Bei jedem Block wirst du:
+> 1. **Geschichte** – lesen, wie es damals wirklich war
+> 2. **Emulator** – denselben Computer im Browser selbst bedienen
+> 3. **Theorie** – das technische Konzept verstehen
+> 4. **Code schreiben** – modern nachprogrammieren was du erlebt hast
+>
+> Ziel: Du sollst *fühlen* warum hardwarenahe Programmierung so ist wie sie ist.
+
+---
+
+## 🗺️ Übersicht
+
+| Block | Epoche | Thema | Emulator |
+|-------|--------|-------|----------|
+| A | 1940er–1950er | Die ersten Computer – Röhren, Lochkarten, reines Binär | ENIAC-Simulator |
+| B | 1970er | Mikroprozessoren – der Altair 8800 und der Beginn des PC | Altair 8800 |
+| C | 1977–1984 | 8-Bit Ära – Apple II und Commodore 64 | C64 / Apple II |
+| D | 1981–1990er | IBM PC, DOS und x86-Assembly | DOS / 8086 |
+| E | Heute | C – die Sprache die aus dieser Geschichte entstand | GCC/Godbolt |
+| F | Immer | Sicherheitsrisiken – warum Geschichte sich wiederholt | – |
+| G | – | Abschlussprojekt | – |
+
+---
+
+---
+
+## Block A: Die ersten Computer – Kein Bildschirm, kein Keyboard
+
+### 📖 Geschichte
+
+#### Der ENIAC (1945) – 27 Tonnen Rechenmaschine
+
+Der **ENIAC** (Electronic Numerical Integrator and Computer) war der erste vollständig elektronische, universell programmierbare Computer der Welt. Gebaut an der University of Pennsylvania, fertiggestellt 1945.
+
+Technische Fakten die heute kaum vorstellbar sind:
+
+| Eigenschaft | ENIAC | Dein Handy (ca.) |
+|-------------|-------|-----------------|
+| Gewicht | 27.000 kg | 200 g |
+| Volumen | 167 m² (ganzer Raum!) | Hosentasche |
+| Bauteile | 17.468 Elektronenröhren | Milliarden Transistoren |
+| Stromverbrauch | 150.000 Watt | 5 Watt |
+| Rechengeschwindigkeit | ~5.000 Additionen/Sek | ~10 Milliarden/Sek |
+| Programmierung | Durch Umstecken von Kabeln | Code-Datei |
+
+**Wie wurde der ENIAC programmiert?**
+
+Es gab keine Tastatur, keinen Bildschirm, keine Programmiersprache. Ein Programm war eine physische Verkabelung: Techniker – hauptsächlich Frauen, die sogenannten „ENIAC Girls" – steckten Hunderte von Kabeln um und stellten 3.000 Schalter von Hand ein. Eine Neuprogrammierung dauerte Tage.
+
+> **Die ENIAC Girls:** Kay McNulty, Betty Jennings, Betty Snyder, Marlyn Wescoff, Fran Bilas und Ruth Lichterman waren die ersten Programmiererinnen eines elektronischen Computers. Ihre Arbeit wurde jahrzehntelang kaum anerkannt.
+
+**Eingabe von Ergebnissen:** Über Lochkarten. Der Computer stanzte Löcher in Pappkarten – ein Loch an Position X bedeutete 1, kein Loch bedeutete 0. Diese Karten wurden dann von einem separaten Gerät gelesen.
+
+#### Lochkarten – physischer Binärcode
+
+```
+Lochkarte (80 Spalten, 12 Zeilen):
+┌────────────────────────────────────────────────────────────────────────────────┐
+│ 0000000000000000000000000000000000000000000000000000000000000000000000000000000│
+│ 1111111111111111111111111111111111111111111111111111111111111111111111111111111│
+│ 2222222222222222 2222222222222222222222222222222222222222222222222222222222222 │
+│ 333333333333333 3333333333333333333333333333333333333333333333333333333333333  │
+│ 4444444444444444444444444444444444444444444444444444444444444444444444444444444│
+│ 5555555555555555555555555555555555555555555555555555555555555555555555555555555│
+│ 6666666 66666666666666666666666666666666666666666666666666666666666666666666666│
+│ 7777777777777777777777777777777777777777777777777777777777777777777777777777777│
+│ 8888888888888888888888888888888888888888888888888888888888888888888888888888888│
+│ 9999999999999999999999999999999999999999999999999999999999999999999999999999999│
+└────────────────────────────────────────────────────────────────────────────────┘
+  Fehlende Ziffern in einer Spalte = gestanztes Loch = Information
+```
+
+Der Ausdruck **"do not fold, spindle or mutilate"** auf Lochkarten wurde in den 1960ern zum politischen Symbol – Studenten trugen ihn als Protest gegen die Bürokratisierung der Universitäten.
+
+#### Warum Binär?
+
+Computer arbeiten binär weil es physisch das Einfachste ist: Ein elektronisches Bauteil ist entweder an oder aus, eine Spannung entweder hoch oder niedrig. Man könnte Computer im Dezimalsystem bauen (die Sowjetunion versuchte es mit dem Setun, 1958) – aber das wäre mechanisch viel komplexer und fehleranfälliger.
+
+> **Randnotiz Zahlensysteme:** Binär = Basis 2 (nur 0 und 1). Hexadezimal = Basis 16 (0–9, A–F) als menschenlesbare Abkürzung für Binär, weil 4 Bits genau einer Hex-Ziffer entsprechen. Das war's – mehr musst du für diesen Kurs nicht wissen.
+
+---
+
+### 🖥️ Emulator A: ENIAC-Simulator im Browser
+
+Der Originalcode den der ENIAC ausführte war eine physische Verkabelung. Es gibt heute einen Browser-Simulator der das Grundprinzip zeigt:
+
+**► Öffne:** https://www.cs.drexel.edu/~bls96/eniac/eniac.html
+
+*(Alternativ: https://www.masswerk.at/misc/eniac/ – einfacherer visueller Simulator)*
+
+**Was du dort siehst:**
+- Akkumulatoren (Speichereinheiten) die nur addieren/subtrahieren können
+- Keine Variablen, kein if/else – nur direkte Verbindungen zwischen Recheneinheiten
+- Das Programm = die Verbindungslinien selbst
+
+**Aufgabe im Emulator:**
+1. Öffne den Simulator und lies die Beschreibung der einzelnen Einheiten
+2. Starte die vorgefertigte Demo-Berechnung
+3. Beobachte: Wie viele Schritte braucht die Maschine für eine einfache Multiplikation?
+
+---
+
+### 📖 Geschichte: Von Röhren zu Transistoren (1947–1955)
+
+Der Transistor wurde 1947 in den Bell Laboratories von William Shockley, John Bardeen und Walter Brattain erfunden. Er ersetzte die riesigen, heißen, störungsanfälligen Elektronenröhren.
+
+```
+Elektronenröhre (1945):
+  Größe: Glühbirne
+  Leistung: mehrere Watt
+  Haltbarkeit: Stunden bis Monate
+  Kosten: teuer
+
+Transistor (1947 →):
+  Größe: Zentimeter → Millimeter → Nanometer
+  Leistung: Milliwattwatt
+  Haltbarkeit: Jahrzehnte
+  Kosten: Massenfertigung möglich
+```
+
+Das **Mooresche Gesetz** (Gordon Moore, 1965): Die Anzahl der Transistoren auf einem Chip verdoppelt sich ungefähr alle zwei Jahre. Das hielt bis in die 2010er – von 2.300 Transistoren (Intel 4004, 1971) bis zu über 100 Milliarden (Apple M4, 2024).
+
+---
+
+### 📝 Eigene Aufgabe A
+
+Schreibe in Python einen **Lochkarten-Decoder:**
+
+```python
+# deine_loesung_a.py
+# Lochkarten verwendeten einen Code namens "Hollerith-Code"
+# Wir simulieren eine vereinfachte Version:
+# Jede Karte hat 8 Positionen (= 1 Byte)
+# Ein "O" = Loch (1), ein "." = kein Loch (0)
+
+karten = [
+    "O.O.O...",  # Was ist das als Binär? Was ist der Dezimalwert?
+    "OO......",
+    "...OOOOO",
+    "OOOOOOOO",
+    "........",
+]
+
+def lochkarte_lesen(karte):
+    # TODO: Konvertiere die Karte in einen Binärstring und dann in eine Dezimalzahl
+    # "O" → "1", "." → "0"
+    pass
+
+def karte_zu_ascii(karte):
+    # TODO: Interpretiere den Dezimalwert als ASCII-Zeichen (falls im Bereich 32-126)
+    pass
+
+for k in karten:
+    wert = lochkarte_lesen(k)
+    zeichen = karte_zu_ascii(k)
+    print(f"Karte: {k}  →  Dezimal: {wert}  →  Zeichen: {zeichen}")
+```
+
+---
+
+---
+
+## Block B: Der Altair 8800 – Der Urahn des Personal Computers (1975)
+
+### 📖 Geschichte
+
+#### Warum 1975 ein Wendepunkt war
+
+Bis Mitte der 1970er waren Computer Werkzeuge von Universitäten, Militär und Großkonzernen. Ein IBM-Mainframe kostete mehr als ein Hochhaus. Dann erschien im Januar 1975 auf dem Cover des Magazins **Popular Electronics** ein unscheinbarer Metallkasten:
+
+**Der Altair 8800.** Preis: 439 Dollar als Bausatz. Zielgruppe: Hobbyisten.
+
+Er hatte:
+- Einen Intel 8080 Prozessor (8-Bit, 2 MHz)
+- 256 Byte RAM (kein Tippfehler – zweihundertsechsundfünfzig Byte)
+- Kein Keyboard
+- Keinen Bildschirm
+- Kein Betriebssystem
+
+**Wie programmierte man ihn?**
+
+Über Kippschalter an der Vorderseite. Jeder Schalter repräsentierte ein Bit. Um ein Programm einzugeben:
+1. Binärzahl für eine Instruktion mit den 8 Schaltern einstellen
+2. Knopf „DEPOSIT" drücken → Wert in RAM schreiben
+3. Wiederholen für jede weitere Instruktion
+4. Zu Adresse 0 zurückgehen → „RUN"
+
+Das Ergebnis sah man nicht auf einem Bildschirm – sondern an den blinkenden LED-Lichtern an der Vorderseite.
+
+> **Bill Gates und Paul Allen** sahen die Popular-Electronics-Titelseite und schrieben in wenigen Wochen einen BASIC-Interpreter für den Altair. Das war der Anfang von Microsoft. Gates war 19 Jahre alt.
+
+**Der Homebrew Computer Club (1975):** In einer Garage in Menlo Park, Kalifornien, trafen sich Enthusiasten die sich Altair-Bauteile teilten und tauschten. Steve Wozniak war Mitglied und zeigte dort seinen selbstgebauten Computer – den späteren **Apple I**.
+
+#### Intel 8080 – Maschinencode ohne Symbole
+
+Der 8080 versteht Zahlen. Keine Symbole, keine Namen – nur Bytes. Ein paar Beispiele:
+
+| Byte (Hex) | Instruktion | Bedeutung |
+|-----------|-------------|-----------|
+| `3E 05`   | `MVI A, 5`  | Lade 5 in Register A |
+| `06 03`   | `MVI B, 3`  | Lade 3 in Register B |
+| `80`      | `ADD B`     | A = A + B |
+| `76`      | `HLT`       | Halt |
+
+Das Programm "5 + 3 berechnen" sieht im Speicher so aus:
+```
+Adresse  Byte (Hex)  Bedeutung
+0000:    3E          MVI A, ...
+0001:    05          ... den Wert 5
+0002:    06          MVI B, ...
+0003:    03          ... den Wert 3
+0004:    80          ADD B
+0005:    76          HLT
+```
+Das ist der Maschinencode – das einzige was der Prozessor versteht. Assembly ist nur eine Abkürzungsschreibweise für genau diese Bytes.
+
+---
+
+### 🖥️ Emulator B1: Altair 8800 im Browser
+
+**► Öffne:** https://s2js.com/altair/
+
+Das ist eine originalgetreue Simulation des Altair 8800.
+
+**Was du siehst:**
+- 16 Adress-LEDs (oben) und 8 Daten-LEDs (Mitte): zeigen aktuelle Adresse und Datenwert als Binär
+- 16 Adress-Schalter und 8 Daten-Schalter
+- Steuerknöpfe: RESET, RUN, STOP, SINGLE STEP, EXAMINE, DEPOSIT
+
+**Guided Tour – "Hallo Altair":**
+
+1. Drücke `RESET` → Adresse 0000
+2. Du gibst jetzt das Programm von oben ein. Stelle folgende Schalter für Byte `3E` (= 0011 1110) ein:
+   - Von links: AUS AUS EIN EIN  EIN EIN EIN AUS
+3. Drücke `DEPOSIT` → Byte wurde in Adresse 0000 geschrieben
+4. Stelle `05` ein (= 0000 0101): AUS AUS AUS AUS  AUS EIN AUS EIN
+5. Drücke `DEPOSIT NEXT`
+6. Fahre fort mit `06`, `03`, `80`, `76`
+7. Drücke `RESET`, dann `RUN`
+8. Beobachte die LEDs: Was blinkt?
+
+> **Wie die Pioniere täglich arbeiteten.** Für ein komplexes Programm konnten hunderte solcher Schritte nötig sein – und ein Vertipper bedeutete Neustart.
+
+---
+
+### 🖥️ Emulator B2: 8080/8085 Assembler mit Visualisierung
+
+Jetzt dasselbe – aber mit Assembly-Syntax (nicht mehr pure Hex-Bytes):
+
+**► Öffne:** https://schweigi.github.io/assembler-simulator/
+
+Das ist ein 8080-kompatibler Assembler/Simulator. Du schreibst Assembly-Text, er übersetzt und simuliert.
+
+**Schritt für Schritt – dein erstes Assembly-Programm:**
+
+```nasm
+; Programm: Addiere 5 + 3
+; Lade Werte in Register, addiere, Ergebnis liegt danach in Register A
+
+        MVI A, 5    ; A = 5
+        MVI B, 3    ; B = 3
+        ADD B       ; A = A + B  (= 8)
+        HLT         ; Stop
+```
+
+1. Kopiere diesen Code in den Editor auf der linken Seite
+2. Klicke `Assemble`
+3. Klicke `Run` oder `Step` (Einzelschritt!)
+4. Beobachte rechts: wie verändern sich Register A und B nach jedem Schritt?
+
+**Jetzt eine Schleife – Summe 1 bis 10:**
+
+```nasm
+; Summe von 1 bis 10
+; Ergebnis landet in Register A
+
+        MVI C, 10   ; Zähler: 10 Schritte
+        MVI A, 0    ; Summe = 0
+        MVI B, 1    ; Aktueller Additionswert = 1
+
+SCHLEIFE:
+        ADD B       ; A = A + B
+        INR B       ; B = B + 1
+        DCR C       ; C = C - 1 (Zähler runter)
+        JNZ SCHLEIFE ; Jump if Not Zero → zurück wenn C noch nicht 0
+
+        HLT
+```
+
+Führe das mit `Step` Schritt für Schritt aus. Du siehst bei jedem Schritt welche Register sich ändern, was die aktuelle Instruktion ist, und wie der Speicher aussieht.
+
+---
+
+### 🔬 Ausprobieren B
+
+1. Ändere die Schleife so dass sie die Summe von 1 bis 5 berechnet. Was ist das erwartete Ergebnis?
+2. Was passiert wenn du `MVI C, 0` setzt? Läuft die Schleife unendlich? Warum?
+3. Versuche eine Multiplikation zu implementieren: `A = 4 × 3` – ohne MUL-Instruktion! (Tipp: Wiederholte Addition)
+4. Öffne den Altair-Emulator und drücke `SINGLE STEP` nach `RUN`. Was siehst du?
+
+---
+
+### 📝 Eigene Aufgabe B
+
+Implementiere im Assembler-Simulator:
+
+```nasm
+; AUFGABE: Finde das Maximum zweier Zahlen
+; Gegeben: Register B = 17, Register C = 42
+; Ergebnis: Register A soll den größeren Wert enthalten
+;
+; Hinweis: Verwende CMP (Compare) und JC (Jump if Carry) / JNC (Jump if Not Carry)
+; CMP X prüft: A - X, setzt Flags aber ändert A nicht
+; Wenn A < X: Carry Flag wird gesetzt
+
+        MVI B, 17
+        MVI C, 42
+        ; ... dein Code hier
+
+        HLT
+```
+
+---
+
+---
+
+## Block C: Die 8-Bit Ära – Commodore 64 und Apple II
+
+### 📖 Geschichte
+
+#### 1977: Das Jahr der "Holy Trinity"
+
+Drei Maschinen erschienen 1977 und definierten was ein "Personal Computer" bedeutet:
+
+- **Apple II** (Steve Wozniak, April 1977): Farbgrafik, offene Architektur, Tabellenkalkulation VisiCalc → Erste "Killer App" der PC-Geschichte
+- **TRS-80** (Tandy/Radio Shack, August 1977): Wurde in Radio Shack-Filialen verkauft → erstmals Computer im Einzelhandel
+- **Commodore PET** (August 1977): Eingebauter Monitor und Kassettenlaufwerk
+
+Alle drei hatten:
+- 8-Bit Prozessoren (MOS 6502 oder Zilog Z80)
+- 1–4 KB RAM (später erweiterbar)
+- BASIC als eingebaute Programmiersprache
+- Einen echten Bildschirm und eine echte Tastatur
+
+**Das war die Revolution:** Jetzt konnte man tippen. Man konnte sehen was man schrieb. Man konnte ein Programm eintippen und sofort ausführen.
+
+---
+
+#### Der Commodore 64 (1982) – meistverkaufter Heimcomputer aller Zeiten
+
+Der **C64** erschien 1982 und sollte der erste Computer für sehr viele Europäer werden. Ca. 12–17 Millionen Einheiten wurden verkauft.
+
+| Eigenschaft | Commodore 64 |
+|-------------|-------------|
+| Prozessor | MOS 6510 (6502-kompatibel) @ 1 MHz |
+| RAM | **64 KB** (ein ganzes Kilobyte pro Dollar!) |
+| Grafik | 16 Farben, 320×200 Pixel, Sprites |
+| Sound | SID-Chip (legendärer Synthesizer-Chip) |
+| Preis | 595 USD (1982), später unter 200 USD |
+| Betriebssystem | BASIC 2.0 (eingebrannt ins ROM) |
+
+Der C64 war Spielkonsole, Heimcomputer und Lernmaschine in einem. Wer in den 1980ern in Europa aufwuchs, hatte sehr wahrscheinlich einen zu Hause oder kannte jemanden der einen hatte. Für viele spätere Programmierer war er der erste Kontakt mit Code.
+
+**Wie man den C64 "programmierte" wenn man ihn kaufte:**
+Man schaltete ihn ein – und landete sofort im BASIC-Interpreter:
+
+```
+    **** COMMODORE 64 BASIC V2 ****
+
+ 64K RAM SYSTEM  38911 BASIC BYTES FREE
+
+READY.
+█
+```
+
+Kein Laden, kein Setup, kein Betriebssystem-Begrüßungsbildschirm. Sofort bereit für BASIC-Befehle. Jedes Kind konnte sofort tippen: `PRINT "HALLO"` – und es funktionierte.
+
+**Die Demo-Scene:** Weil der C64 ein festgelegtes Hardware-Profil hatte, lernten Programmierer die Hardware bis ins letzte Detail zu manipulieren. Es entstand die „Demo-Scene": Gruppen schrieben Programme die am C64 technisch scheinbar Unmögliches zeigten – flüssige Animationen, Musik, Effekte. Das waren Hardcoded-Assembly-Programme, jede CPU-Takt ausgereizt.
+
+---
+
+#### Der Apple II (1977–1993)
+
+Der Apple II war in amerikanischen Schulen allgegenwärtig. Das **Apple II GS** (1986) war der erste Heimcomputer mit einem GUI und Maus für unter 1000 Dollar.
+
+Besonderheit: Der Apple II hatte **offene Steckplätze**. Drittanbieter bauten Erweiterungskarten für Drucker, Netzwerk, Massenspeicher. Das Konzept der offenen Plattform, die den IBM PC-Markt dominieren sollte, wurde hier vorgedacht.
+
+---
+
+### 🖥️ Emulator C1: Commodore 64 – authentische Erfahrung
+
+**► Öffne:** https://c64.vc/ *(oder alternativ: https://c64online.com)*
+
+Du siehst den originalgetreuen Boot-Bildschirm. Der C64 ist bereit.
+
+**Schritt 1: BASIC – Dein erster C64-Code**
+
+Tippe (groß/klein egal, der C64 zeigt alles in Großbuchstaben):
+
+```basic
+PRINT "HALLO KLASSE 2CK"
+```
+
+Drücke Enter. Der C64 führt das sofort aus.
+
+**Schritt 2: Ein kleines Programm mit Zeilennummern**
+
+Im C64-BASIC bekommt jede Zeile eine Nummer. Das ist kein Zufall – Zeilennummern waren die einzige Möglichkeit zu springen (GOTO):
+
+```basic
+10 PRINT "WIE HEISST DU? "
+20 INPUT N$
+30 PRINT "HALLO, "; N$; "!"
+40 PRINT "DU WIRST 100 MAL BEGRUESSТ:"
+50 FOR I = 1 TO 100
+60   PRINT I; ": HALLO "; N$
+70 NEXT I
+80 END
+```
+
+Tippe jede Zeile einzeln und drücke Enter. Dann tippe: `RUN`
+
+**Schritt 3: Direkter Speicherzugriff – C64 POKE/PEEK**
+
+Das Spannende: Der C64 hat keine Zugriffsbeschränkungen. Du kannst jeden Speicherbereich lesen (`PEEK`) und schreiben (`POKE`). Die gesamte Hardware ist über Speicheradressen erreichbar.
+
+```basic
+; Hintergrundfarbe ändern (Adresse 53281 = Hintergrundfarbe-Register):
+POKE 53281, 0    : REM SCHWARZ
+POKE 53281, 6    : REM BLAU
+POKE 53281, 2    : REM ROT
+
+; Rahmenfarbe (Adresse 53280):
+POKE 53280, 1    : REM WEISS
+
+; Zeichenfarbe setzen:
+POKE 646, 7      : REM GELB
+```
+
+Du schreibst direkt in Hardware-Register. Kein Betriebssystem vermittelt – du bist direkt an der Hardware. Genau das ist "hardwarenahe Programmierung".
+
+**Schritt 4: Sprite-Demo** *(für Experimentierfreudige)*
+
+```basic
+10 V = 53248         : REM SPRITE-BASIS-ADRESSE (VIC-II CHIP)
+20 POKE V+21, 1      : REM SPRITE 0 AKTIVIEREN
+30 POKE 2040, 13     : REM SPRITE 0 DATEN IN BLOCK 13
+40 FOR I=0 TO 62     : REM SPRITE-FORM DEFINIEREN
+50   POKE 832+I, 255 : REM ALLES WEISS = AUSGEFÜLLTES RECHTECK
+60 NEXT I
+70 POKE V, 160       : REM X-POSITION
+80 POKE V+1, 100     : REM Y-POSITION
+```
+
+---
+
+### 🖥️ Emulator C2: Apple II – DOS und frühe Spiele
+
+**► Öffne:** https://www.scullinsteel.com/apple2/
+
+*(Alternativ mit echten Disk-Images: https://www.virtualapple.org)*
+
+Der Apple II bootet in Applesoft BASIC. Tippe:
+
+```basic
+]PRINT "HELLO, APPLE II"
+
+]FOR I = 1 TO 10 : PRINT I*I : NEXT I
+
+]TEXT
+]HOME
+]VTAB 12 : HTAB 20 : PRINT "CENTER"
+```
+
+Der `]` ist der BASIC-Prompt des Apple II. Kein Enter nötig nach `]`.
+
+**Auf virtualapple.org** kannst du originale Spiele-Disk-Images laden und spielen – Oregon Trail, Lemonade Stand, Ultima I. Das sind die Spiele auf denen eine Generation von Programmierern aufwuchs.
+
+---
+
+### 🔬 Ausprobieren C
+
+1. Schreibe auf dem C64 ein BASIC-Programm das die Multiplikationstabelle (1×1 bis 10×10) ausgibt.
+2. Was passiert wenn du `POKE 53281, 256` eingibst? (256 ist zu groß für ein Byte!)
+3. Experimentiere mit anderen Adressen: `POKE 198, 0` – was passiert? (Tipp: Das leert den Tastatur-Puffer)
+4. Vergleiche: Ein C64-BASIC-Programm mit GOTO-Sprüngen vs. dasselbe in Python mit Funktionen. Welches ist lesbarer? Warum?
+
+---
+
+### 📝 Eigene Aufgabe C
+
+**BASIC auf dem C64 → Python übersetzen:**
+
+Das ist ein echter C64-BASIC-Code aus einem Schulbuch von 1984:
+
+```basic
+10 REM PRIMZAHL-TEST
+20 INPUT "ZAHL: ";N
+30 IF N < 2 THEN PRINT "KEINE PRIMZAHL" : GOTO 20
+40 FOR I = 2 TO INT(SQR(N))
+50   IF N/I = INT(N/I) THEN PRINT N;"IST KEINE PRIMZAHL" : GOTO 20
+60 NEXT I
+70 PRINT N;"IST EINE PRIMZAHL"
+80 GOTO 20
+```
+
+```python
+# deine_loesung_c.py
+# Übersetze den BASIC-Code in sauberes Python
+# OHNE GOTO – verwende stattdessen Funktionen und Schleifen
+# Erkläre in Kommentaren: Was macht jede BASIC-Zeile?
+
+def ist_primzahl(n):
+    # TODO
+    pass
+
+def main():
+    # TODO: Endlosschleife die nach Zahlen fragt
+    # Bis der Benutzer "exit" eingibt
+    pass
+
+main()
+```
+
+---
+
+---
+
+## Block D: IBM PC, DOS und x86-Assembly (1981–)
+
+### 📖 Geschichte
+
+#### Der IBM PC (1981) – Accidental Standard
+
+1981 wollte IBM schnell in den Heimcomputermarkt einsteigen. Statt alles selbst zu entwickeln, kauften sie Komponenten von Drittanbietern:
+- Prozessor: Intel 8088 (8/16-Bit)
+- Betriebssystem: MS-DOS von Microsoft (das Microsoft für 75.000 Dollar von Seattle Computer Products aufgekauft hatte)
+- BIOS: von einem kleinen Unternehmen
+
+IBM veröffentlichte die vollständigen technischen Spezifikationen (ein Fehler, rückblickend betrachtet). Innerhalb von Monaten bauten andere Hersteller **IBM-kompatible PCs**. Der Standard war gesetzt – und er existiert noch heute. Dein Laptop bootet wahrscheinlich noch immer mit Code der konzeptuell auf diesen Entscheidungen basiert.
+
+#### MS-DOS – eine Welt ohne Maus
+
+**DOS** (Disk Operating System) war die Schnittstelle zwischen Benutzer und Computer von 1981 bis ca. 1995. Kein Desktop, keine Icons, keine Maus. Nur ein Prompt:
+
+```
+C:\>_
+```
+
+Alles geschah durch Tipp-Befehle:
+
+```
+C:\> DIR              ← Verzeichnis anzeigen (wie ls)
+C:\> CD SPIELE        ← In Ordner wechseln
+C:\> COPY A.TXT B.TXT ← Datei kopieren
+C:\> DEL B.TXT        ← Datei löschen
+C:\> FORMAT A:        ← Diskette formatieren
+C:\> EDIT AUTOEXEC.BAT ← Texteditor
+C:\> DEBUG            ← DIREKTER Maschinencode-Eingabe-Modus!
+```
+
+**DEBUG.COM** war ein Tool das mit jedem DOS ausgeliefert wurde – und mit dem man direkt x86-Assembly eingeben und ausführen konnte. Millionen von Programmierern lernten Assembly über DEBUG.
+
+#### x86 – Rückwärtskompatibilität als Fluch und Segen
+
+Der Intel 8086 (1978) definierte eine Befehlsarchitektur, die bis heute existiert. Jeder moderne x86-64-Prozessor kann noch immer 16-Bit 8086-Code ausführen. Das ist sowohl bemerkenswert (Kompatibilität über 46 Jahre!) als auch problematisch (viele seltsame Eigenheiten im modernen x86 stammen aus 1978er-Kompromissen).
+
+```
+1978: Intel 8086 (16-Bit, Register AX, BX, CX, DX)
+         ↓
+1985: Intel 80386 (32-Bit, Register EAX, EBX, ECX, EDX)
+         ↓
+2003: AMD Athlon 64 (64-Bit, Register RAX, RBX, RCX, RDX)
+         ↓
+Heute: Intel Core i9 / AMD Ryzen
+         ↓
+Alles rückwärtskompatibel – ein 8086-Programm läuft (theoretisch) noch heute.
+```
+
+---
+
+### 🖥️ Emulator D1: DOS im Browser – echtes MS-DOS
+
+**► Öffne:** https://copy.sh/v86/?profile=msdos
+
+Das ist ein vollständiger x86-PC-Emulator der echtes MS-DOS 6.22 ausführt.
+
+**Erste Schritte in DOS:**
+
+```batch
+C:\> VER              ← Version anzeigen
+C:\> DIR              ← Dateien anzeigen
+C:\> HELP             ← Hilfe
+C:\> CLS              ← Bildschirm leeren
+C:\> DATE             ← Datum setzen
+C:\> TIME             ← Zeit setzen
+```
+
+**Einen Batch-File schreiben (DOS-Scripting):**
+
+```batch
+C:\> COPY CON HALLO.BAT    ← Eingabe direkt in Datei (Ctrl+Z zum Beenden!)
+@ECHO OFF
+ECHO Hallo aus DOS!
+ECHO Das Jahr ist %DATE%
+PAUSE
+^Z                         ← Ctrl+Z drücken!
+C:\> HALLO                 ← Ausführen!
+```
+
+---
+
+### 🖥️ Emulator D2: x86-Assembly mit DEBUG-ähnlichem Interface
+
+**► Öffne:** https://asm.x32.dev/ *(Moderner x86-64 Assembly Playground)*
+
+**Alternativ für 16-Bit x86 (originalgetreu):**  
+**► Öffne:** https://www.tutorialspoint.com/compile_assembly_online.php
+
+**Dein erstes x86-Assembly-Programm** (NASM-Syntax, 32-Bit Linux):
+
+```nasm
+; hallo.asm – "Hallo Welt" in x86-32 Assembly
+; Kein printf, kein C – direkt zum Betriebssystem
+
+section .data
+    nachricht db "Hallo aus Assembly!", 10   ; 10 = Newline-Zeichen
+    laenge    equ $ - nachricht               ; Länge automatisch berechnen
+
+section .text
+    global _start
+
+_start:
+    ; Systemaufruf: write(1, nachricht, laenge)
+    mov eax, 4          ; Syscall-Nummer 4 = sys_write
+    mov ebx, 1          ; Dateideskriptor 1 = stdout
+    mov ecx, nachricht  ; Zeiger auf den Text
+    mov edx, laenge     ; Anzahl Bytes
+    int 0x80            ; Interrupt 0x80 = Linux Kernel aufrufen
+
+    ; Systemaufruf: exit(0)
+    mov eax, 1          ; Syscall-Nummer 1 = sys_exit
+    mov ebx, 0          ; Exitcode 0 = Erfolg
+    int 0x80
+```
+
+---
+
+### 🖥️ Emulator D3: Godbolt – C zu Assembly in Echtzeit
+
+Das ist das mächtigste Tool für das Verständnis von Compiler-Output:
+
+**► Öffne:** https://godbolt.org
+
+Links: C-Code schreiben. Rechts: Assembly das der Compiler daraus macht.
+
+**Aufgabe – Verfolge den Compiler:**
+
+```c
+// Schritt 1: Einfache Funktion
+int addiere(int a, int b) {
+    return a + b;
+}
+```
+
+Beobachte den Assembly-Output (wähle `x86-64 gcc` und `-O0`).
+
+```c
+// Schritt 2: Mit Optimierung (-O2)
+// Denselben Code, andere Compiler-Flags
+// Was ändert sich?
+```
+
+```c
+// Schritt 3: Eine Schleife
+int summe(int n) {
+    int s = 0;
+    for (int i = 1; i <= n; i++) {
+        s += i;
+    }
+    return s;
+}
+// Mit -O2: Der Compiler optimiert die Schleife weg!
+// Er berechnet s = n*(n+1)/2 direkt (Gaußsche Summenformel)
+```
+
+```c
+// Schritt 4: Vergleiche C-Compiler mit ARM-Compiler
+// Wähle rechts: "ARM gcc" statt "x86-64 gcc"
+// Komplett andere Assembler-Syntax – dieselbe C-Funktion!
+// Das zeigt: Assembly ist CPU-spezifisch, C ist portabel
+```
+
+---
+
+### 🔬 Ausprobieren D
+
+1. Tippe in DOS `DEBUG` und dann `A 100` (Assemble ab Adresse 100). Gib ein: `MOV AX, 5` – Enter, `HLT` – Enter, Enter. Dann `G 100` (Go to 100). Was passiert?
+2. In Godbolt: Schreibe eine Funktion mit einem `if/else`. Welche Assembly-Instruktionen entsprechen dem `if`?
+3. Aktiviere in Godbolt `-O3` (maximale Optimierung). Was passiert mit einer Funktion die eine konstante Zahl zurückgibt?
+4. Vergleiche: Wie viele Assembly-Zeilen braucht eine einfache `for`-Schleife bei `-O0` vs. `-O2`?
+
+---
+
+### 📝 Eigene Aufgabe D
+
+**Assembly lesen – Godbolt Reverse Engineering:**
+
+```c
+// Gib diesen C-Code in Godbolt ein (x86-64 gcc, -O0):
+int mystery(int n) {
+    int result = 0;
+    int i = 1;
+    while (i <= n) {
+        result = result + i;
+        i = i + 2;
+    }
+    return result;
+}
+```
+
+1. Notiere den Assembly-Output
+2. Beschreibe in Deutsch was jede Assembly-Zeile macht
+3. Erkläre was die Funktion mathematisch berechnet
+4. Aktiviere `-O2` – beschreibe wie der Compiler das vereinfacht hat
+
+---
+
+---
+
+## Block E: C – Die Sprache die aus dieser Geschichte hervorging
+
+### 📖 Geschichte
+
+#### Unix und C – eine Symbiose (1969–1972)
+
+**Ken Thompson** entwickelte 1969 das Unix-Betriebssystem in Assembly für den PDP-7-Computer der Bell Laboratories. Das Problem: Der Code lief nur auf diesem einen Rechnertyp.
+
+**Dennis Ritchie** entwickelte 1972 die Programmiersprache C als Weiterentwicklung von Thompsons B-Sprache. Das Ziel: Eine Sprache die nahe genug an der Hardware ist um ein Betriebssystem zu schreiben – aber portabel genug um auf verschiedenen Maschinen zu funktionieren.
+
+Unix wurde in C neu geschrieben. Das war revolutionär: Das erste Betriebssystem das nicht in Assembly geschrieben war. Wenn man eine neue Hardware-Plattform unterstützen wollte, musste man nur einen C-Compiler für diese Plattform schreiben – und schon lief Unix dort.
+
+> **"C is quirky, flawed, and an enormous success."** – Dennis Ritchie
+
+Die Buch-Empfehlung: **"The C Programming Language"** von Kernighan und Ritchie (1978), kurz "K&R". Das erste Programm in diesem Buch ist das berühmte "Hello, World!" – und diese Tradition existiert bis heute.
+
+#### Was C von BASIC unterscheidet
+
+| Eigenschaft | C64 BASIC | C |
+|------------|-----------|---|
+| Kompiliert/Interpretiert | Interpretiert (langsam) | Kompiliert (schnell) |
+| Typisierung | Keine | Statisch (jede Variable hat einen Typ) |
+| Speicherzugriff | PEEK/POKE (direkt aber unstrukturiert) | Zeiger (strukturiert, mächtig, gefährlich) |
+| Strukturierung | GOTO, Zeilennummern | Funktionen, Schleifen, kein GOTO |
+| Wiederverwendung | Kaum möglich | Header-Dateien, Libraries |
+
+---
+
+### 🖥️ Emulator E: C direkt im Browser – mit vollständigem Compiler
+
+**► Primäres Tool: Godbolt.org** (bereits bekannt)
+
+**► Für Ausführen:** https://www.onlinegdb.com/online_c_compiler
+
+**► Historisches Feeling (PDP-11/Unix-Simulation):** https://www.pdp11.org/pdp11gui.html
+
+**Guided Tour durch C:**
+
+```c
+/* hallo.c – Das erste C-Programm der Welt, fast unverändert seit 1978 */
+/* K&R, "The C Programming Language", Seite 1 */
+
+#include <stdio.h>
+
+main()
+{
+    printf("hello, world\n");
+}
+```
+
+> **Historische Note:** In der Original-K&R-Version von 1978 fehlte noch `int` vor `main()` und `return 0;` am Ende. Die C-Sprache hat sich seitdem verändert – aber dieses Programm ist der Urahn jedes "Hello World" das du je geschrieben hast.
+
+**Entwicklung von BASIC zu C – drei Vergleiche:**
+
+```basic
+' C64 BASIC:
+10 FOR I = 1 TO 10
+20   PRINT I * I
+30 NEXT I
+```
+
+```c
+/* Dasselbe in C: */
+#include <stdio.h>
+int main(void) {
+    for (int i = 1; i <= 10; i++) {
+        printf("%d\n", i * i);
+    }
+    return 0;
+}
+```
+
+---
+
+```basic
+' C64 BASIC (Primzahltest):
+10 INPUT N
+20 FOR I = 2 TO SQR(N)
+30   IF N/I = INT(N/I) THEN PRINT "KEINE PRIMZAHL" : END
+40 NEXT I
+50 PRINT "PRIMZAHL"
+```
+
+```c
+/* Dasselbe in C – mit Funktion, ohne GOTO: */
+#include <stdio.h>
+#include <math.h>
+#include <stdbool.h>
+
+bool ist_primzahl(int n) {
+    if (n < 2) return false;
+    for (int i = 2; i <= (int)sqrt(n); i++) {
+        if (n % i == 0) return false;
+    }
+    return true;
+}
+
+int main(void) {
+    int n;
+    printf("Zahl: ");
+    scanf("%d", &n);
+    printf("%d ist %sPrimzahl\n", n, ist_primzahl(n) ? "" : "keine ");
+    return 0;
+}
+```
+
+---
+
+### 💻 Beispiel E1: Direkter Speicherzugriff in C – das moderne PEEK/POKE
+
+In C gibt es kein PEEK/POKE – aber Zeiger machen dasselbe, strukturierter:
+
+```c
+/* beispiel_e1_speicher.c */
+/* Zeigt: Zeiger sind das moderne PEEK/POKE */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main(void) {
+    /* ── Zeiger: Adresse einer Variable lesen und schreiben ─ */
+    int x = 42;
+    int *zeiger = &x;   /* zeiger = Adresse von x (wie PEEK-Adresse) */
+    
+    printf("Wert von x:      %d\n", x);
+    printf("Adresse von x:   %p\n", (void*)&x);
+    printf("Wert über Zeig.: %d\n", *zeiger);    /* PEEK */
+    
+    *zeiger = 100;                                 /* POKE */
+    printf("x nach POKE:     %d\n", x);           /* x ist jetzt 100! */
+    
+    /* ── Speicher im Detail betrachten ─────────────────────── */
+    /* Ein int ist 4 Bytes – schauen wir rein: */
+    unsigned char *byte_zeiger = (unsigned char*)&x;
+    printf("\nInt %d als 4 Bytes (little-endian):\n", x);
+    for (int i = 0; i < 4; i++) {
+        printf("  Byte %d (Adresse %p): %d (0x%02X)\n", 
+               i, (void*)(byte_zeiger+i), byte_zeiger[i], byte_zeiger[i]);
+    }
+    
+    /* ── Dynamischer Speicher: malloc/free ──────────────────── */
+    int *array = malloc(5 * sizeof(int));
+    if (array == NULL) {
+        printf("Fehler: kein Speicher!\n");
+        return 1;
+    }
+    
+    for (int i = 0; i < 5; i++) {
+        array[i] = (i+1) * 10;
+    }
+    
+    printf("\nDynamisches Array: ");
+    for (int i = 0; i < 5; i++) {
+        printf("%d ", array[i]);
+    }
+    printf("\n");
+    
+    free(array);    /* PFLICHT! Kein Garbage Collector! */
+    array = NULL;
+    
+    return 0;
+}
+```
+
+---
+
+### 💻 Beispiel E2: Kompiliert vs. Interpretiert – sichtbarer Unterschied
+
+```c
+/* beispiel_e2_geschwindigkeit.c */
+/* Zeigt konkret warum kompilierter Code schneller ist */
+#include <stdio.h>
+#include <time.h>
+
+int main(void) {
+    long long summe = 0;
+    long long n = 1000000000LL;   /* Eine Milliarde */
+    
+    clock_t start = clock();
+    
+    for (long long i = 1; i <= n; i++) {
+        summe += i;
+    }
+    
+    clock_t ende = clock();
+    double sekunden = (double)(ende - start) / CLOCKS_PER_SEC;
+    
+    printf("Summe: %lld\n", summe);
+    printf("Zeit:  %.3f Sekunden\n", sekunden);
+    
+    return 0;
+}
+```
+
+```python
+# Dasselbe in Python – führe beide aus und vergleiche:
+import time
+
+summe = 0
+n = 1_000_000_000
+
+start = time.time()
+
+for i in range(1, n + 1):
+    summe += i
+
+ende = time.time()
+
+print(f"Summe: {summe}")
+print(f"Zeit:  {ende - start:.3f} Sekunden")
+```
+
+> **Was du siehst:** Das C-Programm ist typischerweise 10–100× schneller. Der Grund: C wird zu Maschinencode kompiliert, Python wird zur Laufzeit interpretiert (jede Zeile muss zuerst analysiert werden). Für ein Betriebssystem oder einen Treiber ist dieser Unterschied entscheidend.
+
+---
+
+### 🔬 Ausprobieren E
+
+1. Führe Beispiel E2 aus. Wie groß ist der Geschwindigkeitsunterschied auf deinem Rechner?
+2. Füge in Godbolt `-O2` zum C-Code von E2 hinzu. Wie verändert sich der Assembly-Output? (Hinweis: Der Compiler kennt die Gaußformel...)
+3. Schreibe in C eine Funktion `char_zu_ascii(char c)` die die ASCII-Nummer eines Zeichens zurückgibt – ohne jede Bibliothek. Wie viele Assembly-Instruktionen braucht das?
+
+---
+
+### 📝 Eigene Aufgabe E
+
+**Portierung: C64 BASIC → C**
+
+Das ist ein echtes Spiel das auf dem C64 gespielt wurde (vereinfacht):
+
+```basic
+10  REM "ZAHLENRATEN" C64 BASIC 1983
+20  GOSUB 1000        : REM ZUFALLSZAHL
+30  V = RND(1) * 100  : REM 0 bis 99
+40  V = INT(V) + 1    : REM 1 bis 100
+50  PRINT "ICH DENKE AN EINE ZAHL (1-100)"
+60  V2 = 0
+70  INPUT "DEIN TIPP: ";T
+80  V2 = V2 + 1
+90  IF T = V THEN GOTO 200
+100 IF T < V THEN PRINT "ZU KLEIN!"
+110 IF T > V THEN PRINT "ZU GROSS!"
+120 GOTO 70
+200 PRINT "RICHTIG! IN ";V2;" VERSUCHEN!"
+210 INPUT "NOCHMAL (J/N)? ";A$
+220 IF A$ = "J" THEN GOTO 30
+230 END
+1000 RETURN
+```
+
+```c
+/* deine_loesung_e.c */
+/* Portiere dieses C64-BASIC-Spiel nach C */
+/* Anforderungen:
+   - Funktionen statt GOTO
+   - Schleifen statt Zeilennummern
+   - Richtige Zufallszahlen mit rand()/srand()
+   - Versuchsanzahl zählen
+   - Frage am Ende ob nochmal gespielt werden soll
+*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+int zahlenraten(void) {
+    /* TODO */
+    return 0;   /* Gibt Anzahl Versuche zurück */
+}
+
+int main(void) {
+    srand(time(NULL));   /* Zufallsgenerator initialisieren */
+    /* TODO */
+    return 0;
+}
+```
+
+---
+
+---
+
+## Block F: Sicherheitsrisiken – Geschichte wiederholt sich
+
+### 📖 Geschichte
+
+#### Warum ausgerechnet C so viele Sicherheitslücken produziert
+
+C wurde 1972 für Bell-Labs-Ingenieure geschrieben – erfahrene Leute die wussten was sie taten. Das Designprinzip: **Vertraue dem Programmierer.** C prüft keine Array-Grenzen, macht kein Speichermanagement, hat keine eingebauten Sicherheitsmechanismen.
+
+Das war eine bewusste Entscheidung: Overhead für Prüfungen würde Programme langsamer machen, und 1972 waren CPU-Zyklen wertvoll. In einer Welt ohne Internet, ohne vernetzte Systeme, ohne böswillige Nutzer war das vernünftig.
+
+Dann kam das Internet.
+
+---
+
+### 🔐 Risiko F1: Der Morris Worm (1988) – Das erste große Sicherheitsereignis
+
+Am 2. November 1988 verbreitete sich das erste große Schadprogramm im damaligen Internet (dem ARPANET). **Robert Tappan Morris**, Student an der Cornell University, schrieb einen Wurm der sich selbst kopierte.
+
+Er nutzte drei Schwachstellen aus:
+1. Einen **Buffer Overflow** im `fingerd`-Daemon (C-Code ohne Längenbegrenzung)
+2. Eine Schwachstelle in `sendmail`
+3. Schwache Passwörter
+
+Innerhalb von Stunden waren Tausende Unix-Workstations an Universitäten und Forschungseinrichtungen befallen und lahmgelegt. Der Schaden wurde auf 100.000 bis Millionen Dollar geschätzt.
+
+Morris wurde verurteilt – als erster unter dem Computer Fraud and Abuse Act. Er ist heute Professor am MIT.
+
+**Die Technik dahinter: Buffer Overflow**
+
+```c
+/* Der verwundbare fingerd-Code (vereinfacht, historisch rekonstruiert): */
+void lies_anfrage(char *eingabe) {
+    char puffer[512];
+    gets(puffer);    /* gets() prüft KEINE Länge! */
+    /* Wenn die Eingabe > 512 Bytes: Überschreibt Return-Adresse! */
+}
+```
+
+```
+Stack-Layout WÄHREND des Angriffs:
+┌──────────────────┐  ← hohe Adressen
+│  Return-Adresse  │  ← wird überschrieben mit: Adresse in unserem Shellcode!
+├──────────────────┤
+│  Saved RBP       │
+├──────────────────┤
+│  puffer[511]     │
+│  ...             │
+│  puffer[0]       │  ← ab hier: Angreifer-Code (als "Eingabe" getarnt)
+└──────────────────┘  ← niedrige Adressen (Eingabe kommt hier rein)
+```
+
+Der Angreifer sendet als "Eingabe" einen String der:
+- Mit ausführbarem Maschinencode beginnt (dem eigentlichen Schadcode)
+- So lang ist dass er bis zur Return-Adresse reicht
+- Die Return-Adresse mit der Adresse des eigenen Schadcodes überschreibt
+
+Wenn `gets()` zurückkehrt, springt die CPU nicht zur legitimen Rücksprungadresse – sondern zum Schadcode.
+
+---
+
+### 🔐 Risiko F2: Heartbleed (2014) – Ein Tippfehler der die halbe Welt traf
+
+**OpenSSL** ist die Bibliothek die HTTPS-Verschlüsselung für einen Großteil des Internets bereitstellt. 2014 wurde eine Schwachstelle entdeckt die seit 2012 im Code war.
+
+```c
+/* Vereinfachte Darstellung des verwundbare Heartbeat-Codes: */
+void heartbeat_antwort(unsigned char *eingabe, int laenge) {
+    unsigned char *antwort = malloc(laenge);    /* laenge kommt vom Angreifer! */
+    memcpy(antwort, eingabe, laenge);           /* Kopiert laenge Bytes aus dem Speicher! */
+    sende(antwort, laenge);
+}
+
+/* Der Angriff:
+   Angreifer sendet: eingabe = "HAL", laenge = 65535
+   
+   memcpy kopiert 65535 Bytes – aber die Eingabe war nur 3 Bytes lang!
+   Die restlichen 65532 Bytes kommen aus dem Arbeitsspeicher – dem Heap.
+   Dort könnten stehen: Private Schlüssel, Passwörter, Session-Tokens.
+*/
+```
+
+Das Problem: Die Länge wurde nicht gegen die tatsächliche Eingabelänge geprüft.
+
+**Konsequenzen:** Betroffen waren schätzungsweise 500.000 Webserver weltweit, darunter Yahoo, Imgur und viele andere. Passwörter, private SSL-Schlüssel und andere sensible Daten konnten ausgelesen werden.
+
+**Gefix mit einer Zeile:**
+
+```c
+/* FIX: Einfache Längenprüfung */
+if (laenge > tatsaechliche_eingabe_laenge) {
+    return;    /* Abbruch! */
+}
+```
+
+Ein Jahrzehnte alter Fehlertyp, der durch das Vertrauen von C in den Programmierer möglich wurde.
+
+---
+
+### 🔐 Risiko F3: Moderne Gegenmaßnahmen
+
+```c
+/* beispiel_f3_sicher.c */
+/* Zeigt sichere Programmierung in C */
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+/* ── UNSICHER: Buffer Overflow möglich ────────────────── */
+void unsichere_funktion(char *eingabe) {
+    char puffer[64];
+    strcpy(puffer, eingabe);     /* ⚠️ Keine Längenbegrenzung! */
+    printf("Unsicher: %s\n", puffer);
+}
+
+/* ── SICHER: Mit Längenbegrenzung ─────────────────────── */
+void sichere_funktion(char *eingabe) {
+    char puffer[64];
+    strncpy(puffer, eingabe, sizeof(puffer) - 1);
+    puffer[sizeof(puffer) - 1] = '\0';   /* Nullterminierung erzwingen */
+    printf("Sicher: %s\n", puffer);
+}
+
+/* ── FORMAT STRING VULNERABILITY ──────────────────────── */
+void format_unsicher(char *eingabe) {
+    printf(eingabe);                     /* ⚠️ Wenn eingabe = "%x%x%x%x"! */
+}
+
+void format_sicher(char *eingabe) {
+    printf("%s", eingabe);               /* ✅ Eingabe wird nur als String behandelt */
+}
+
+int main(void) {
+    char normale_eingabe[100] = "Das ist eine normale Eingabe";
+    
+    sichere_funktion(normale_eingabe);
+    format_sicher(normale_eingabe);
+    
+    /* Teste den Unterschied: Kompiliere mit -fsanitize=address */
+    /* gcc -fsanitize=address -g beispiel_f3_sicher.c -o test */
+    /* Dann provoziere einen Overflow – AddressSanitizer zeigt wo! */
+    
+    return 0;
+}
+```
+
+| Mechanismus | Was es macht | Aktivieren mit |
+|-------------|-------------|---------------|
+| **AddressSanitizer** | Erkennt Buffer Overflows zur Laufzeit | `gcc -fsanitize=address` |
+| **Stack Canaries** | Zufallswert zwischen Puffer und Return-Adresse | `gcc -fstack-protector` |
+| **ASLR** | Adressen werden zufällig platziert | Betriebssystem (immer aktiv) |
+| **NX-Bit** | Stack/Heap nicht ausführbar | CPU + OS |
+| **Valgrind** | Findet Memory Leaks und fehlerhafte Zugriffe | `valgrind ./programm` |
+
+---
+
+### 🔬 Ausprobieren F
+
+1. Suche auf YouTube nach "Heartbleed explained" (Computerphile-Video). Was ist das XKCD-Comic dazu? Was erklärt es?
+2. Schreibe in C ein Programm mit `gets()` (in einem Online-Compiler!) und gib eine sehr lange Eingabe ein. Was passiert?
+3. Kompiliere dasselbe Programm mit `-fsanitize=address`. Wie verändert sich die Fehlermeldung?
+4. Recherchiere: **Log4Shell (2021)** – eine ähnliche Schwachstelle in Java. Wie unterscheidet sie sich technisch vom Morris-Worm-Angriff?
+
+---
+
+### 📝 Eigene Aufgabe F
+
+**Code-Archäologie:** Du hast einen alten C-Code aus dem Jahr 1992. Finde und erkläre alle Sicherheitsprobleme:
+
+```c
+/* login.c – Studentenprojekt, Universität Wien, ~1992 */
+/* "Bitte NICHT in Produktion verwenden" stand nicht drauf. */
+#include <stdio.h>
+#include <string.h>
+
+char gespeichertes_passwort[] = "sicher99";
+int  eingeloggt = 0;
+
+void login_versuch(char *eingabe) {
+    char puffer[8];
+    gets(puffer);                              /* (A) */
+    if (strcmp(puffer, gespeichertes_passwort) == 0) {
+        eingeloggt = 1;
+    }
+}
+
+void zeige_status() {
+    char nachricht[50];
+    sprintf(nachricht, "Status: %s", eingeloggt ? "eingeloggt" : "nicht eingeloggt");
+    printf(nachricht);                         /* (B) */
+    printf("\n");
+}
+
+int berechne_speicher(int anzahl_eintraege) {
+    unsigned char groesse = anzahl_eintraege * 16;  /* (C) */
+    return groesse;
+}
+
+int main(void) {
+    printf("Passwort: ");
+    login_versuch(NULL);
+    zeige_status();
+    
+    printf("Eintraege: ");
+    int n;
+    scanf("%d", &n);
+    int s = berechne_speicher(n);
+    printf("Speicher: %d Byte\n", s);          /* (D) */
+    
+    char *daten = malloc(s);
+    for (int i = 0; i <= s; i++) {             /* (E) */
+        daten[i] = 0;
+    }
+    /* free(daten) fehlt */                    /* (F) */
+    
+    return 0;
+}
+```
+
+```
+// deine_loesung_f.txt
+// Dokumentiere JEDEN der markierten Punkte (A) bis (F):
+// 1. Was ist das Problem?
+// 2. Wie könnte ein Angreifer es ausnutzen?
+// 3. Wie behebt man es?
+//
+// Schreibe dann eine sichere Version: login_sicher.c
+```
+
+---
+
+---
+
+## Block G: Abschlussprojekt – Wähle eine Aufgabe
+
+---
+
+### 🥇 Option 1: Zeitreise-Simulator
+
+Baue einen Python-Simulator der zeigt wie dasselbe Programm (Fibonacci-Berechnung bis n=30) auf verschiedenen historischen Computern "laufen würde":
+
+```python
+# Simuliere die ungefähre Ausführungszeit auf:
+# - ENIAC (1945): ~5.000 Additionen/Sekunde
+# - Altair 8800 (1975): ~500.000 Operationen/Sekunde  
+# - C64 (1982): ~1.000.000 Operationen/Sekunde
+# - IBM PC 8086 (1981): ~2.500.000 Operationen/Sekunde
+# - Pentium (1993): ~100.000.000 Operationen/Sekunde
+# - Moderner i9 (2024): ~5.000.000.000 Operationen/Sekunde
+
+# Zähle die tatsächlichen Operationen deines Fibonacci-Algorithmus
+# Berechne: Zeit = Operationen / Operationen_pro_Sekunde
+# Gib aus: Auf dem ENIAC hätte das X Stunden/Minuten/Sekunden gedauert
+```
+
+---
+
+### 🥈 Option 2: Vom C64 zu C – komplette Portierung
+
+```basic
+' Dieses C64-BASIC-Spiel soll vollständig nach C portiert werden:
+' "SNAKE" (vereinfacht, textbasiert)
+'
+' Das Spiel:
+' - Schlange bewegt sich auf einem 20x20 Gitter
+' - Frisst Futter (+1 Länge, +1 Punkt)  
+' - Stirbt bei Wand oder sich selbst
+' - WASD-Steuerung
+'
+' Auf dem C64 lief das mit PEEK/POKE auf Grafikregister.
+' In C verwendest du: Arrays für das Spielfeld,
+'                     structs für die Schlange,
+'                     und keine GOTO.
+```
+
+---
+
+### 🥉 Option 3: Assembly-Verstehens-Challenge
+
+Öffne Godbolt. Gib 5 verschiedene C-Funktionen ein (eigene Ideen!) und erstelle für jede eine Tabelle:
+
+| C-Funktion | Ohne Optimierung (Zeilen Assembly) | Mit -O2 (Zeilen) | Was hat der Compiler optimiert? |
+|-----------|-----------------------------------|-----------------|--------------------------------|
+| ... | ... | ... | ... |
+
+Erkläre in einem kurzen Text (10–15 Sätze): Was hast du über den Compiler gelernt?
+
+---
+
+## ✅ Abschluss-Checkliste
+
+```
+REFLEXION – beantworte schriftlich:
+
+1. 1945 bis heute: Nenne drei konkrete technische Schritte die Computer
+   von Vakuumröhren-Maschinen zu modernen Prozessoren gebracht haben.
+
+2. Warum musste man den Altair 8800 mit Kippschaltern programmieren?
+   Was hat sich seitdem verändert – und was ist GLEICH GEBLIEBEN?
+
+3. Erkläre den Unterschied zwischen BASIC auf dem C64 und C.
+   Warum ist C nicht einfach "neueres BASIC"?
+
+4. Was haben der Morris Worm (1988) und Heartbleed (2014)
+   technisch gemeinsam? Was sagt das über die Natur von Sicherheitslücken?
+
+5. "C vertraut dem Programmierer." Erkläre was das konkret bedeutet –
+   an einem selbst gewählten Codebeispiel.
+```
+
+---
+
+## 📚 Weiterführende Ressourcen
+
+### Geschichte
+- **Computer History Museum:** https://computerhistory.org
+- **Oral History – ENIAC Programmers:** https://eniacprogrammers.org
+- **"Halt and Catch Fire" (TV-Serie):** Fiktionale, aber historisch akkurate Geschichte der PC-Industrie 1983–1994
+- **Revolution OS (2001, Dokumentarfilm):** Geschichte von Linux und Open Source
+
+### Emulatoren & Simulatoren
+- **Internet Archive – Software Library:** https://archive.org/details/softwarelibrary – Tausende Original-DOS-Spiele und -Programme, direkt im Browser
+- **Altair 8800 Emulator:** https://s2js.com/altair/
+- **C64 Online:** https://c64online.com
+- **PCjs Machines (IBM PC, Apple II u.v.m.):** https://www.pcjs.org
+- **copy.sh/v86 (echtes DOS, Windows 95, Linux):** https://copy.sh/v86/
+
+### Assembly & C
+- **Godbolt Compiler Explorer:** https://godbolt.org
+- **"The C Programming Language" (K&R):** Das Originalbuch – immer noch lesenswert
+- **CS50x (Harvard, kostenlos):** https://cs50.harvard.edu/x – Beginnt mit C
+- **Computerphile YouTube:** Buffer Overflow, Heartbleed, Morris Worm – alle erklärt
+
+### Sicherheit
+- **Computerphile "Buffer Overflow Attack":** YouTube
+- **"The Internet's Own Boy" (Dokumentarfilm):** Aaron Swartz und Internet-Freiheit
+- **pwn.college:** https://pwn.college – Binary Exploitation (fortgeschritten)
