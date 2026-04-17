@@ -963,6 +963,8 @@ ld hallo.o -o hallo
 
 Das entspricht dem was der TOY-Emulator automatisch macht wenn du „Run" drückst – nur dass dort kein Betriebssystem involviert ist.
 
+Anonsten kann der Code auch auf https://onecompiler.com/assembly ausprobiert werden (dort direkt „Run“ drücken, kein Linken und Kompilieren nötig).
+
 ```nasm
 ; hallo.asm – "Hallo Welt" ohne C-Bibliothek
 ; Direkte Linux-Systemaufrufe (syscalls) – wie TOY's Adresse FF für I/O
