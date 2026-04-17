@@ -1,0 +1,1834 @@
+# APR Advanced – 2CK
+
+**Klasse:** 2CK | **Semester:** 2  
+**Thema:** Hardwarenahe Programmierung – Von der Geschichte bis zu C
+
+---
+
+> 📖 **So arbeitest du mit diesen Unterlagen:**
+>
+> Diese Unterlagen verbinden **Geschichte**, **Theorie** und **praktische Arbeit** miteinander.
+> Jeder Block besteht aus:
+> 1. **Lesen & Verstehen** – historischer und theoretischer Kontext
+> 2. **Ausprobieren** – Emulator oder Tool direkt im Browser nutzen
+> 3. **Aufgabe** – selbst implementieren und reflektieren
+>
+> Das zentrale Tool in diesen Unterlagen ist der **Visual X-TOY Simulator** von der Princeton University –
+> eine vereinfachte, aber vollständig funktionsfähige Maschine die alle wesentlichen Prinzipien
+> echter CPUs zeigt.
+
+---
+
+## 🗺️ Übersicht
+
+| Block | Thema |
+|-------|-------|
+| A | Geschichte der Programmiersprachen – ein Überblick |
+| B | Wie ein Computer denkt – Binär, Hex und warum |
+| C | Die TOY-Maschine – Aufbau und Bedienung |
+| D | TOY programmieren – Befehle, Beispiele, Aufgaben |
+| E | Von TOY zu echter Assembly – x86 NASM |
+| F | Kompiliert vs. Interpretiert – wie Sprachen funktionieren |
+| G | Einführung in C – die Sprache die aus dieser Geschichte entstand |
+
+---
+
+---
+
+## Block A: Geschichte der Programmiersprachen
+
+### 📖 Theorie
+
+Bevor wir in technische Details einsteigen, schauen wir uns an wie Programmiersprachen überhaupt entstanden sind – und warum es viele verschiedene davon gibt.
+
+#### 1940er: Kein Code, nur Hardware
+
+Die ersten programmierbaren Maschinen hatten keine Programmiersprache. Ein Programm war eine **physische Konfiguration der Hardware** – Kabel umstecken, Schalter umlegen.
+
+Der **ENIAC** (1945, University of Pennsylvania) war der erste vollständig elektronische Computer: 27 Tonnen, 167 m² Grundfläche, 17.468 Elektronenröhren. Um ein neues Problem zu berechnen, mussten Techniker – darunter die berühmten „ENIAC Girls" Kay McNulty, Betty Jennings, Betty Snyder und andere – **Hunderte von Kabeln von Hand umstecken**. Eine Neuprogrammierung dauerte Tage.
+
+> Die ENIAC Girls waren die ersten Programmiererinnen eines elektronischen Computers. Ihre Arbeit wurde jahrzehntelang kaum anerkannt – obwohl sie das Herzstück des Betriebs waren.
+
+#### 1949–1950er: Maschinencode und das stored-program Modell
+
+**John von Neumann** entwickelte 1945 die Idee des *stored-program computers*: Programme sollen nicht mehr als Verkabelung existieren, sondern als **Zahlen im Speicher gespeichert** werden – genau wie Daten. Das ist die Grundlage aller modernen Computer.
+
+Das Programm bestand jetzt aus Zahlen – **Maschinencode**. Jede Zahl stand für eine Instruktion. Das war ein enormer Fortschritt gegenüber dem Kabelumstecken, aber noch immer extrem mühsam: Der Programmierer musste alle Operationen als Binär- oder Hexadezimalzahlen eintippen.
+
+```
+Maschinencode-Beispiel (hypothetisch):
+  3E 05   → Lade den Wert 5 ins Register
+  06 03   → Lade den Wert 3
+  80      → Addiere
+  76      → Halt
+```
+
+#### 1950er: Assembly – menschenlesbare Symbole
+
+Um 1950 entstand die Idee: Statt roher Zahlen schreibt man **symbolische Abkürzungen** – und ein Programm (der *Assembler*) übersetzt diese automatisch in Maschinencode.
+
+```
+Maschinencode:    3E 05 06 03 80 76
+Assembly:         MVI A, 5
+                  MVI B, 3
+                  ADD B
+                  HLT
+```
+
+Das ist Assembly-Sprache: eine 1:1-Entsprechung zu Maschinencode, aber lesbar. **Assembler** war die erste „Hochsprache" – obwohl wir sie heute als sehr niedrig einschätzen.
+
+Erste Assembler wurden um 1950 für Maschinen wie den **EDSAC** (Cambridge, 1949) oder die **IBM 701** entwickelt.
+
+#### 1957–1960er: Hochsprachen – FORTRAN, COBOL, LISP
+
+Der nächste Sprung: Statt symbolischer Entsprechungen zu Maschinenbefehlen wollten Programmierer in einer dem Problem angemessenen Sprache schreiben.
+
+| Jahr | Sprache | Entwickelt von | Ziel |
+|------|---------|---------------|------|
+| 1957 | **FORTRAN** | IBM (John Backus) | Mathematische Berechnungen (FORmula TRANslation) |
+| 1958 | **LISP** | MIT (John McCarthy) | Künstliche Intelligenz, symbolische Verarbeitung |
+| 1959 | **COBOL** | Grace Hopper (US Navy) | Geschäftsanwendungen, lesbar wie Englisch |
+| 1960 | **ALGOL** | Internationales Komitee | Algorithmen, Vorlage für fast alle späteren Sprachen |
+
+> **Grace Hopper** – Konteradmiral der US Navy und Informatikerin – erfand das Konzept des Compilers. Sie sagte: „The most dangerous phrase in the language is 'We've always done it this way.'" Sie fand auch buchstäblich den ersten dokumentierten Bug: eine Motte die in einem Relais steckte.
+
+#### 1970er: C und Unix – die Grundlage der modernen Welt
+
+**Dennis Ritchie** entwickelte 1972 bei Bell Labs die Sprache **C** um das Unix-Betriebssystem zu schreiben. Das war revolutionär: Erstmals wurde ein Betriebssystem *nicht* in Assembly geschrieben, sondern in einer Hochsprache – die aber noch hardwarenah genug war.
+
+C ist die direkte Mutter von C++, C#, Java, Python, JavaScript, und nahezu jeder anderen modernen Sprache. Wer C versteht, versteht die DNA der modernen Programmierung.
+
+#### 1980er–heute: Explosion der Sprachen
+
+```
+1972  C          → Betriebssysteme, Systemsoftware
+1980  C++        → Objektorientierung + C
+1983  Ada        → Sicherheitskritische Systeme (Militär, Luft-/Raumfahrt)
+1987  Perl       → Textverarbeitung, Web-Scripting
+1991  Python     → Einfach lernbar, Data Science, KI
+1991  Java       → "Write once, run anywhere", Enterprise
+1993  Lua        → Eingebettet in Spiele (World of Warcraft, Roblox)
+1995  JavaScript → Web-Browser, heute überall
+1995  Ruby       → Elegantes OOP, Webframeworks
+2003  Scala      → Funktional + OOP auf JVM
+2009  Go         → Google, einfache Nebenläufigkeit
+2010  Rust       → Sicher + schnell, kein Garbage Collector
+2014  Swift      → Apple-Ökosystem (iOS, macOS)
+2016  Kotlin     → Android, JVM
+...
+```
+
+**Warum so viele?** Weil jede Sprache Kompromisse macht: Geschwindigkeit vs. Sicherheit, Einfachheit vs. Ausdrucksmächtigkeit, Plattformunabhängigkeit vs. Hardwarenähe. Es gibt keine universell beste Sprache – nur besser oder schlechter geeignete für bestimmte Aufgaben.
+
+---
+
+### 🔬 Ausprobieren A
+
+Öffne diese interaktive Zeitleiste und navigiere durch die Geschichte:  
+**► https://www.levenez.com/lang/** (Unix/C-zentrierte Sprachentwicklung)  
+**► https://hopl.info/** (History of Programming Languages – über 8000 Sprachen dokumentiert)
+
+1. Welche Sprache wurde zuerst entwickelt: FORTRAN oder COBOL?
+2. Von welcher Sprache wurde Python direkt beeinflusst? (HOPL-Suche: Python)
+3. Suche nach einer Sprache die du kennst – welche anderen Sprachen haben sie beeinflusst?
+
+---
+
+### 📝 Aufgabe A – Sprachvergleich
+
+Löse dieselbe Aufgabe in zwei verschiedenen Sprachen und vergleiche:
+
+**Aufgabe:** Berechne die Summe 1 + 2 + 3 + ... + 10 und gib das Ergebnis aus.
+
+```python
+# Python (1991) – interpretiert, hochsprachlich
+# Schreibe hier deine Lösung:
+
+```
+
+```c
+/* C (1972) – kompiliert, hardwarenah */
+/* Schreibe hier deine Lösung: */
+#include <stdio.h>
+
+int main(void) {
+    
+    return 0;
+}
+```
+
+Notiere: Welche Unterschiede fallen dir auf? Welche Version ist leichter zu lesen?
+
+---
+
+---
+
+## Block B: Wie ein Computer denkt – Binär und Hexadezimal
+
+### 📖 Theorie
+
+#### Warum Binär?
+
+Computer arbeiten binär weil es **physisch das Einfachste** ist: Ein elektronisches Bauteil (ein Transistor) ist entweder an oder aus – zwei Zustände. Aus diesen zwei Zuständen lässt sich alles andere aufbauen.
+
+Man könnte Computer im Dezimalsystem bauen – die Sowjetunion versuchte es in den 1950ern mit dem *Setun* (Basis 3). Es funktionierte, war aber viel aufwändiger herzustellen und fehleranfälliger.
+
+```
+Dezimalsystem:  Basis 10  →  0 1 2 3 4 5 6 7 8 9
+Binärsystem:    Basis  2  →  0 1
+Hexadezimal:    Basis 16  →  0 1 2 3 4 5 6 7 8 9 A B C D E F
+```
+
+#### Binär → Dezimal: das Stellenwertsystem
+
+Genau wie im Dezimalsystem hat jede Stelle einen Wert – nur sind es Potenzen von 2 statt Potenzen von 10:
+
+```
+Dezimal:   tausend  hundert  zehn  eins
+               10³      10²   10¹   10⁰
+               1000     100    10     1
+
+Binär:       128   64   32   16    8    4    2    1
+               2⁷   2⁶   2⁵   2⁴   2³   2²   2¹   2⁰
+
+Beispiel: 1011 0110 (binär)
+  = 1×128 + 0×64 + 1×32 + 1×16 + 0×8 + 1×4 + 1×2 + 0×1
+  = 128 + 0 + 32 + 16 + 0 + 4 + 2 + 0
+  = 182 (dezimal)
+```
+
+#### Hexadezimal: Kurzschreibweise für Binär
+
+Binärzahlen werden schnell sehr lang. Hexadezimal (Basis 16) ist eine praktische Abkürzung: genau 4 Bits entsprechen einer Hex-Ziffer.
+
+```
+Binär:  0000  0001  0010  0011  0100  0101  0110  0111
+Hex:       0     1     2     3     4     5     6     7
+
+Binär:  1000  1001  1010  1011  1100  1101  1110  1111
+Hex:       8     9     A     B     C     D     E     F
+
+Beispiel: 1011 0110 (binär)
+  = B    6   (hex)  →  0xB6
+```
+
+Das Präfix `0x` zeigt an dass es sich um Hexadezimal handelt: `0xFF`, `0x1A3C`, `0x0005`.
+
+#### Wichtige Begriffe
+
+| Begriff | Bits | Wertebereich |
+|---------|------|-------------|
+| **Bit** | 1 | 0 oder 1 |
+| **Nibble** | 4 | 0–15 (0x0–0xF) |
+| **Byte** | 8 | 0–255 (0x00–0xFF) |
+| **Word** | abhängig von CPU | bei TOY: 16 Bit (0x0000–0xFFFF) |
+
+#### Zweierkomplement – negative Zahlen in Binär
+
+Wie stellt man negative Zahlen dar? Die elegante Lösung: **Zweierkomplement**.
+
+Bei einem 16-Bit-Wort ist das höchste Bit (Bit 15) das Vorzeichenbit: `0` = positiv, `1` = negativ.
+
+```
+0000 0000 0000 0101  =  +5
+0000 0000 0000 0000  =   0
+1111 1111 1111 1111  =  -1
+1111 1111 1111 1011  =  -5
+1000 0000 0000 0000  =  -32768 (kleinstes 16-Bit-Vorzeichen-Integer)
+0111 1111 1111 1111  =  +32767 (größtes)
+```
+
+Warum heißt es Zweierkomplement? Weil man eine negative Zahl erhält indem man alle Bits umdreht und 1 addiert:
+```
++5  =  0000 0000 0000 0101
+       1111 1111 1111 1010  (alle Bits umdrehen)
+    +                    1
+     = 1111 1111 1111 1011  = -5  ✓
+```
+
+Der Vorteil: Die CPU kann Addition und Subtraktion mit **derselben Schaltung** durchführen. Kein Sonderfall für negative Zahlen nötig.
+
+> Die TOY-Maschine (Block C und D) arbeitet mit 16-Bit-Zweierkomplement-Zahlen.
+
+---
+
+### 🔬 Ausprobieren B
+
+**Schnell-Umrechnung im Browser:**
+
+Python kann direkt als Taschenrechner dienen. Öffne https://www.online-python.com und probiere:
+
+```python
+# Dezimal → Binär / Hex
+print(bin(182))     # 0b10110110
+print(hex(182))     # 0xb6
+
+# Binär / Hex → Dezimal  
+print(0b10110110)   # 182
+print(0xB6)         # 182
+print(int("10110110", 2))  # 182
+
+# Bitweise Operatoren (die TOY auch kennt!)
+a = 0b1100  # 12
+b = 0b1010  # 10
+print(bin(a & b))   # AND: 1000
+print(bin(a | b))   # OR:  1110
+print(bin(a ^ b))   # XOR: 0110
+print(bin(a << 1))  # Links-Shift: ×2
+print(bin(a >> 1))  # Rechts-Shift: ÷2
+```
+
+Beantworte:
+1. Was ergibt `0b1111 + 1` in Binär? (Integer overflow bei 4-Bit!)
+2. Was ist `0xFF & 0x0F`? Was bewirkt das? (Tipp: schau dir die Bits an)
+3. Was ist `5 << 3`? Erkenne das Muster.
+
+---
+
+---
+
+## Block C: Die TOY-Maschine – Aufbau und Bedienung
+
+### 📖 Theorie
+
+#### Was ist TOY?
+
+**TOY** ist eine von Princeton-Professoren (Sedgewick & Wayne) erfundene, vereinfachte CPU. Sie ist *imaginary* – es gibt keine physische Maschine – aber sie ist vollständig: alles was ein echter Prozessor kann, kann TOY auch. Nur mit 16 Instruktionen statt über 1000 beim modernen x86.
+
+#### Warum TOY? – Die Lernbegründung
+
+Das ist eine legitime Frage: Warum lernen wir eine erfundene Maschine statt gleich echte x86-Assembly?
+
+**1. Echte CPUs sind historisch gewachsen – und das sieht man**
+
+Der Intel x86-Befehlssatz existiert seit 1978. Jede Generation hat neue Befehle hinzugefügt – für Multimedia, für 64-Bit, für Kryptographie, für Vektorrechnung. Das Ergebnis: über 1.500 Instruktionen, dutzende Adressierungsmodi, Sonderregeln für Sonderregeln. Vieles davon existiert nur noch aus Rückwärtskompatibilität – niemand würde es heute so bauen.
+
+```
+Echte x86-Assembly (NASM):          TOY:
+─────────────────────────────       ─────────────────────────────
+section .data                       10: 8AFF   R[A] ← stdin
+    msg db "hello",10,0             11: 8BFF   R[B] ← stdin
+    len equ $ - msg                 12: 1CAB   R[C] ← R[A]+R[B]
+                                    13: 9CFF   stdout ← R[C]
+section .text                       14: 0000   halt
+    global _start
+_start:
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, msg
+    mov edx, len
+    int 0x80
+    mov eax, 1
+    xor ebx, ebx
+    int 0x80
+```
+
+Beide Programme machen dasselbe Konzept: Daten laden, verarbeiten, ausgeben, stoppen. In x86 ist der Overhead für Einsteiger enorm. In TOY sieht man sofort was passiert.
+
+**2. TOY hat genau die richtigen Konzepte – nichts mehr, nichts weniger**
+
+TOY hat:
+- Register → Variablen der CPU
+- Speicher → RAM, adressierbar
+- Arithmetik → add, subtract, shift
+- Logik → and, xor
+- Sprünge → bedingt und unbedingt → daraus entstehen alle Schleifen und if/else
+- Indirekte Adressierung → das Zeiger-Konzept
+- I/O → stdin/stdout über Speicheradresse FF
+
+Das sind exakt die Konzepte die in C, in Java, in jedem Betriebssystem stecken. Kein Konzept fehlt, kein Ballast ist dabei.
+
+**3. Du programmierst wie die Pioniere – und verstehst warum Assembly erfunden wurde**
+
+In TOY gibt es keine symbolischen Namen für Befehle. Du schreibst `8AFF`, nicht `LOAD RA, stdin`. Das ist kein Fehler im Design – es ist der Punkt. Du erlebst direkt warum Programmierer in den 1950ern anfingen, symbolische Abkürzungen zu erfinden. Nach ein paar TOY-Programmen versteht man den Wert von Assembly. Nach ein paar Assembly-Programmen versteht man den Wert von C. Diese Unterlagen bauen genau diesen Bogen.
+
+**4. TOY ist vollständig – nicht vereinfacht**
+
+TOY ist kein Lernspielzeug das wichtige Teile weglässt. Es ist eine vollständige Von-Neumann-Maschine. Jede Berechnung die auf einem modernen Computer möglich ist, ist auch auf TOY möglich (gegeben genug Speicher und Zeit). Das ist keine Marketing-Aussage – das folgt aus der Theorie der Berechenbarkeit (Turing-Vollständigkeit).
+
+> **Historisches Vorbild:** TOY ist eng an den **PDP-8** (Digital Equipment Corporation, 1965) und den **PDP-11** (1970) angelehnt – die Computer auf denen Unix und C ursprünglich entwickelt wurden. Wer TOY versteht, versteht die Denkweise der Maschinen die die moderne Softwarewelt begründet haben.
+
+#### Die Hardware-Komponenten von TOY
+
+```
+┌──────────────────────────────────────────────────────────┐
+│                    TOY Maschine                          │
+│                                                          │
+│  REGISTER (16 Stück, je 16 Bit):                         │
+│  R0  R1  R2  R3  R4  R5  R6  R7                         │
+│  R8  R9  RA  RB  RC  RD  RE  RF                         │
+│  ↑ R0 ist IMMER 0000 – unveränderlich!                   │
+│                                                          │
+│  HAUPTSPEICHER: 256 Speicherzellen (Adressen 00–FF)      │
+│  Jede Zelle speichert ein 16-Bit-Wort                    │
+│                                                          │
+│  PROGRAM COUNTER (PC): 8 Bit, zeigt auf nächste          │
+│  Instruktion. Startet bei Adresse 10.                    │
+│                                                          │
+│  STANDARD INPUT:  Adresse FF (lesen)                     │
+│  STANDARD OUTPUT: Adresse FF (schreiben)                 │
+└──────────────────────────────────────────────────────────┘
+```
+
+**Register vs. Speicher:**
+- Register: 16 Stück, ultraschnell, direkt in der CPU – wie Variablen
+- Speicher: 256 Zellen, langsamer – wie RAM
+- Arithmetik kann NUR auf Registern ausgeführt werden, nicht direkt im Speicher
+
+**Das ist exakt wie echte CPUs funktionieren.** Auch ein moderner Intel-Prozessor hat Register (rax, rbx, ...) und muss Daten erst in Register laden bevor er damit rechnen kann.
+
+#### Das Instruktionsformat
+
+Jede TOY-Instruktion ist **4 Hex-Ziffern = 16 Bit**:
+
+```
+Format 1: opcode  d  s  t
+          (1 Hex) (1) (1) (1)
+          Bedeutung: R[d] ← Operation mit R[s] und R[t]
+
+Format 2: opcode  d  addr
+          (1 Hex) (1) (2 Hex = 8 Bit Speicheradresse)
+          Bedeutung: Lade/Speichere Adresse oder Sprung
+```
+
+Beispiele:
+```
+1462  →  Opcode 1 (add),  Ziel: R4,  Quelle: R6 + R2
+         Also: R[4] ← R[6] + R[2]
+
+9C02  →  Opcode 9 (store), Register: RC, Adresse: 02
+         Also: mem[02] ← R[C]
+
+8AFF  →  Opcode 8 (load), Register: RA, Adresse: FF (= stdin!)
+         Also: Lese Eingabe → R[A]
+```
+
+#### Die 16 TOY-Instruktionen im Überblick
+
+**Arithmetik & Logik (Format 1: `op d s t`)**
+
+| Opcode | Name | Pseudocode | Beispiel |
+|--------|------|-----------|---------|
+| `1` | add | `R[d] ← R[s] + R[t]` | `1CAB` → RC = RA + RB |
+| `2` | subtract | `R[d] ← R[s] - R[t]` | `2CAB` → RC = RA - RB |
+| `3` | and | `R[d] ← R[s] & R[t]` | `3312` → R3 = R1 & R2 |
+| `4` | xor | `R[d] ← R[s] ^ R[t]` | `4312` → R3 = R1 ^ R2 |
+| `5` | left shift | `R[d] ← R[s] << R[t]` | `5423` → R4 = R2 << R3 |
+| `6` | right shift | `R[d] ← R[s] >> R[t]` | `6423` → R4 = R2 >> R3 |
+
+**Speicher (Format 2: `op d addr`)**
+
+| Opcode | Name | Pseudocode | Beispiel |
+|--------|------|-----------|---------|
+| `7` | load address | `R[d] ← addr` | `7A30` → RA = 0x30 |
+| `8` | load | `R[d] ← mem[addr]` | `8A00` → RA = Inhalt von Adresse 00 |
+| `9` | store | `mem[addr] ← R[d]` | `9C02` → Speichere RC nach Adresse 02 |
+| `A` | load indirect | `R[d] ← mem[R[t]]` | `AC0A` → RC = mem[RA] |
+| `B` | store indirect | `mem[R[t]] ← R[d]` | `BC06` → mem[R6] = RC |
+
+**Sprünge / Flusssteuerung (Format 2)**
+
+| Opcode | Name | Pseudocode | Beispiel |
+|--------|------|-----------|---------|
+| `C` | branch zero | `if R[d]==0: PC ← addr` | `CA10` → wenn RA=0, springe zu 10 |
+| `D` | branch positive | `if R[d]>0: PC ← addr` | `DA12` → wenn RA>0, springe zu 12 |
+| `E` | jump register | `PC ← R[d]` | `EF00` → PC = RF |
+| `F` | jump and link | `R[d]←PC; PC←addr` | `FF30` → speichere PC in RF, springe zu 30 |
+| `0` | halt | Programm stoppen | `0000` |
+
+**Zwei nützliche Tricks (Idioms):**
+```
+Register kopieren (kein direkter Befehl!):
+  1201  →  R[2] ← R[0] + R[1]  →  R[2] = R[1]   (weil R[0] immer 0)
+
+Unbedingter Sprung (kein GOTO!):
+  C010  →  if R[0]==0 goto 10  →  immer, weil R[0] immer 0
+```
+
+---
+
+### 🖥️ Visual X-TOY herunterladen und starten
+
+**► Download:** https://lift.cs.princeton.edu/xtoy/
+
+Zwei Optionen:
+- **macOS App:** `Visual X-TOY.dmg` herunterladen → in Applications ziehen
+- **JAR (Windows/Linux/Mac):** `toy.jar` herunterladen → `java -jar toy.jar` im Terminal
+
+**Die Oberfläche:**
+
+```
+┌─────────────────────────────────────────────────────┐
+│  [Memory Display]  [Registers]  [PC]  [Stdin/Stdout]│
+│                                                      │
+│  Adresse  Inhalt                                     │
+│  00:      0000   ← Speicherzellen                   │
+│  01:      0000                                       │
+│  ...                                                 │
+│  10:      0000   ← PC startet hier!                 │
+│  ...                                                 │
+│  FF:      0000   ← stdin/stdout                     │
+│                                                      │
+│  [Load] [Step] [Run] [Stop] [Reset]                  │
+└─────────────────────────────────────────────────────┘
+```
+
+**Modi:**
+- **Edit Mode:** Werte direkt in Speicherzellen eintippen (wie Kippschalter umstecken)
+- **Run/Step:** Programm ausführen oder Einzelschritt
+- **Stdin-Feld:** Eingabewerte hineinschreiben (als Hex-Zahlen, zeilenweise)
+
+---
+
+### 🔬 Ausprobieren C – Erste Schritte im Emulator
+
+1. Öffne Visual X-TOY
+2. Gehe in den Edit Mode
+3. Tippe in Adresse `10` den Wert `8AFF` ein (load von stdin nach RA)
+4. Tippe in Adresse `11` den Wert `9AFF` ein (store RA nach stdout)
+5. Tippe in Adresse `12` den Wert `0000` ein (halt)
+6. Schreibe `0005` in das stdin-Feld
+7. Setze PC auf `10` und drücke `Run`
+8. Was siehst du im stdout?
+
+Das ist ein Echo-Programm: lesen → schreiben → halt. 3 Instruktionen.
+
+---
+
+---
+
+## Block D: TOY programmieren – Schritt für Schritt
+
+### 📖 Theorie: Das Fetch-Execute-Prinzip
+
+Jeder Computer – ob TOY oder moderner Intel-Prozessor – arbeitet nach demselben Prinzip:
+
+```
+┌─────────────────────────────────────────────────────┐
+│            FETCH-EXECUTE-ZYKLUS (endlos)            │
+│                                                      │
+│  1. FETCH:   Lese Instruktion aus mem[PC]            │
+│  2. INCREMENT: PC = PC + 1                           │
+│  3. EXECUTE: Führe Instruktion aus                   │
+│              (kann PC nochmals ändern → Sprung!)     │
+│  → Zurück zu 1.                                      │
+└─────────────────────────────────────────────────────┘
+```
+
+Die Konsequenz: Sprünge (`C`, `D`, `E`, `F`) sind nichts Magisches – sie ändern einfach den PC. Das nächste Fetch holt dann die Instruktion von der neuen Adresse.
+
+---
+
+### 💻 Beispiel D1: Zwei Zahlen addieren
+
+**Aufgabe:** Addiere zwei feste Werte (5 und 8) und speichere das Ergebnis.
+
+**Strategie:**
+1. Werte in Datenspeicher (Adressen 00 und 01) ablegen
+2. In Register laden
+3. Addieren
+4. Ergebnis zurück in Speicher (Adresse 02)
+5. Halt
+
+```
+Adresse  Wert    Bedeutung
+─────────────────────────────────────────────
+00:      0005    Datenwert: 5
+01:      0008    Datenwert: 8
+
+10:      8A00    R[A] ← mem[00]   (lade 5 in RA)
+11:      8B01    R[B] ← mem[01]   (lade 8 in RB)
+12:      1CAB    R[C] ← R[A] + R[B]   (RC = 5 + 8 = 13 = 000D in hex)
+13:      9C02    mem[02] ← R[C]   (schreibe Ergebnis nach Adresse 02)
+14:      0000    halt
+```
+
+**Eingabe in X-TOY:**
+- Adresse `00` → `0005`
+- Adresse `01` → `0008`
+- Adresse `10` → `8A00`
+- Adresse `11` → `8B01`
+- Adresse `12` → `1CAB`
+- Adresse `13` → `9C02`
+- Adresse `14` → `0000`
+
+Dann PC auf `10` setzen → Run.
+
+Nach dem Halt: Adresse `02` enthält `000D` (= 13 dezimal).
+
+> **Warum 000D?** 5 + 8 = 13, und 13 dezimal = D hexadezimal. TOY rechnet immer in Hex!
+
+---
+
+### 💻 Beispiel D2: Eingabe lesen und ausgeben (stdin/stdout)
+
+Die Speicheradresse `FF` ist magisch: Lesen von `FF` holt einen Wert aus stdin, Schreiben nach `FF` gibt einen Wert auf stdout aus.
+
+**Aufgabe:** Zwei Zahlen lesen, addieren, Ergebnis ausgeben.
+
+```
+Adresse  Wert    Bedeutung
+─────────────────────────────────────────────
+10:      8AFF    R[A] ← stdin    (lese erste Zahl)
+11:      8BFF    R[B] ← stdin    (lese zweite Zahl)
+12:      1CAB    R[C] ← R[A] + R[B]
+13:      9CFF    stdout ← R[C]   (gib Ergebnis aus)
+14:      0000    halt
+```
+
+**Im X-TOY:**
+- Trage im stdin-Feld ein:
+  ```
+  0005
+  0008
+  ```
+- PC auf `10`, Run.
+- Stdout zeigt: `000D`
+
+---
+
+### 💻 Beispiel D3: If-Abfrage (branch)
+
+**Aufgabe:** Lese eine Zahl. Wenn sie positiv ist, gib `0001` aus. Wenn sie null ist, gib `0000` aus.
+
+**Strategie:** `D` = branch if positive. Wenn die Zahl > 0, springe zu einer anderen Adresse.
+
+```
+Adresse  Wert    Bedeutung
+─────────────────────────────────────────────
+10:      8AFF    R[A] ← stdin    (lese Zahl)
+11:      DA13    if R[A] > 0: PC ← 13   (positiv → springe zu 13)
+12:      C015    if R[0] == 0: PC ← 15  (immer → springe zu 15, gibt 0 aus)
+
+13:      7B01    R[B] ← 0001     (Wert 1 laden, für "positiv")
+14:      9BFF    stdout ← R[B]   (ausgeben)
+15:      0000    halt
+```
+
+Teste mit verschiedenen stdin-Werten:
+- `0005` (positiv) → Ausgabe: `0001`
+- `0000` (null) → Ausgabe: nichts (halt direkt)
+- `FFFF` (= -1 in Zweierkomplement) → Was passiert?
+
+> **Wichtig:** TOY interpretiert `branch if positive` mit dem Vorzeichenbit. `FFFF` ist im Zweierkomplement negativ → kein Sprung.
+
+---
+
+### 💻 Beispiel D4: Schleife – Potenzen von 2
+
+**Aufgabe:** Gib alle positiven Potenzen von 2 aus: 1, 2, 4, 8, 16, ...  
+Solange der aktuelle Wert positiv ist (d.h. das Vorzeichenbit noch 0 ist).
+
+```
+Adresse  Wert    Bedeutung
+─────────────────────────────────────────────
+00:      0001    Datenwert: 1 (Startwert)
+
+10:      8A00    R[A] ← mem[00]   (lade 1)
+11:      9AFF    stdout ← R[A]    (gib aus)      ← Schleifenanfang (Adresse 11)
+12:      1AAA    R[A] ← R[A] + R[A]  (×2: A = A + A)
+13:      DA11    if R[A] > 0: PC ← 11   (weiter solange positiv)
+14:      0000    halt
+```
+
+**Was passiert:** 1, 2, 4, 8, ..., 4096, 8192, 16384 – dann ist das nächste Ergebnis 32768 = `8000` hex, und das Vorzeichenbit ist 1 → nicht mehr positiv → Halt.
+
+**In X-TOY:**
+- PC auf `10`, Run (oder besser: Step für jeden Schritt!)
+- Beobachte wie RA bei jedem Schleifendurchlauf verdoppelt wird
+
+---
+
+### 💻 Beispiel D5: Schleife mit Zähler – Summe 1 bis N
+
+**Aufgabe:** Lese N aus stdin. Berechne 1 + 2 + ... + N. Gib Ergebnis aus.
+
+**Variablen:**
+- RA = aktueller Summand (i), zählt von N bis 1
+- RB = laufende Summe
+- R1 = Konstante 1 (nötig zum Dekrementieren)
+
+```
+Adresse  Wert    Bedeutung
+─────────────────────────────────────────────
+10:      8AFF    R[A] ← stdin    (lese N)
+11:      7B00    R[B] ← 0        (Summe = 0)
+12:      7101    R[1] ← 1        (Konstante 1)
+
+13:      CA17    if R[A] == 0: PC ← 17   (wenn i=0, fertig)   ← Schleifenanfang
+14:      1BAB    R[B] ← R[B] + R[A]      (Summe += i)
+15:      2AA1    R[A] ← R[A] - R[1]      (i--)
+16:      C013    if R[0] == 0: PC ← 13   (immer zurück → Schleife)
+
+17:      9BFF    stdout ← R[B]   (gib Summe aus)
+18:      0000    halt
+```
+
+Teste mit `000A` (= 10 dezimal) → Erwartet: `0037` (= 55 dezimal: 1+2+...+10)
+
+**Schritt-für-Schritt-Trace** (für stdin = `0003`, N=3):
+
+| PC | Instruktion | RA | RB | Bedeutung |
+|----|------------|----|----|-----------|
+| 10 | 8AFF | 0003 | – | Lese N=3 |
+| 11 | 7B00 | 0003 | 0000 | Summe=0 |
+| 12 | 7101 | 0003 | 0000 | R1=1 |
+| 13 | CA17 | 0003 | 0000 | RA≠0 → kein Sprung |
+| 14 | 1BAB | 0003 | 0003 | Summe=0+3=3 |
+| 15 | 2AA1 | 0002 | 0003 | i=3-1=2 |
+| 16 | C013 | 0002 | 0003 | → Sprung zu 13 |
+| 13 | CA17 | 0002 | 0003 | RA≠0 → kein Sprung |
+| 14 | 1BAB | 0002 | 0005 | Summe=3+2=5 |
+| 15 | 2AA1 | 0001 | 0005 | i=2-1=1 |
+| 16 | C013 | 0001 | 0005 | → Sprung zu 13 |
+| 13 | CA17 | 0001 | 0005 | RA≠0 → kein Sprung |
+| 14 | 1BAB | 0001 | 0006 | Summe=5+1=6 |
+| 15 | 2AA1 | 0000 | 0006 | i=1-1=0 |
+| 16 | C013 | 0000 | 0006 | → Sprung zu 13 |
+| 13 | CA17 | 0000 | 0006 | **RA=0 → Sprung zu 17!** |
+| 17 | 9BFF | 0000 | 0006 | Ausgabe: 0006 ✓ (1+2+3=6) |
+| 18 | 0000 | – | – | Halt |
+
+---
+
+### 💻 Beispiel D6: Multiplikation ohne MUL-Befehl
+
+TOY hat keinen Multiplikationsbefehl. Trotzdem kann man multiplizieren: durch **wiederholte Addition**.
+
+`a × b` = `b` mal den Wert `a` zu einer Summe addieren.
+
+**Variablen:**
+- RA = a (erster Faktor, wird als Zähler verwendet)
+- RB = b (zweiter Faktor)
+- RC = Ergebnis (c), startet bei 0
+- R1 = Konstante 1
+
+```
+Adresse  Wert    Bedeutung
+─────────────────────────────────────────────
+0A:      0003    a = 3
+0B:      0009    b = 9
+
+10:      8A0A    R[A] ← mem[0A]   (a)
+11:      8B0B    R[B] ← mem[0B]   (b)
+12:      7C00    R[C] ← 0          (c = 0)
+13:      7101    R[1] ← 1          (Konstante)
+
+14:      CA18    if R[A] == 0: PC ← 18   (Schleife: solange a ≠ 0)
+15:      1CCB    R[C] ← R[C] + R[B]      (c += b)
+16:      2AA1    R[A] ← R[A] - R[1]      (a--)
+17:      C014    if R[0]==0: PC ← 14      (zurück zur Schleife)
+
+18:      9CFF    stdout ← R[C]
+19:      0000    halt
+```
+
+Ergebnis für 3 × 9: `001B` = 27 dezimal ✓
+
+---
+
+### 💻 Beispiel D7: Arrays mit indirekter Adressierung (opcodes A und B)
+
+Arrays sind nicht direkt eingebaut – aber mit *indirekter Adressierung* erreichbar.
+
+**Idee:** Ein Register speichert eine Speicheradresse (einen *Zeiger*). `A` liest von der Adresse im Register, `B` schreibt dorthin. Durch Erhöhen des Registers bewegt man sich durch den Array.
+
+**Aufgabe:** Zahlen einlesen bis 0000, dann umgekehrt ausgeben.
+
+```
+Adresse  Wert    Bedeutung
+─────────────────────────────────────────────
+10:      7101    R[1] ← 1         (Konstante)
+11:      7A30    R[A] ← 30        (Basis-Adresse des Arrays: ab Speicher 0x30)
+12:      7B00    R[B] ← 0         (n = Anzahl Elemente)
+
+// Einlese-Schleife:
+13:      8CFF    R[C] ← stdin
+14:      CC19    if R[C]==0: PC ← 19   (0 = Stopp)
+15:      16AB    R[6] ← R[A] + R[B]   (Zeiger auf a[n])
+16:      BC06    mem[R[6]] ← R[C]     (a[n] = c)
+17:      1BB1    R[B] ← R[B] + R[1]   (n++)
+18:      C013    goto 13
+
+// Ausgabe rückwärts:
+19:      CB20    if R[B]==0: PC ← 20  (n=0 → fertig)
+1A:      16AB    R[6] ← R[A] + R[B]
+1B:      2661    R[6] ← R[6] - R[1]   (Zeiger auf a[n-1])
+1C:      AC06    R[C] ← mem[R[6]]     (c = a[n-1])
+1D:      9CFF    stdout ← R[C]
+1E:      2BB1    R[B] ← R[B] - R[1]   (n--)
+1F:      C019    goto 19
+
+20:      0000    halt
+```
+
+Stdin: `0001 0002 0003 0004 0000` → Stdout: `0004 0003 0002 0001`
+
+> **Das ist der Zeiger-Gedanke!** Register 6 speichert eine Speicheradresse – also einen *Zeiger* auf ein Array-Element. Opcode A/B dereferenziert ihn. Genau dasselbe macht C mit Zeigern.
+
+---
+
+### 🔬 Ausprobieren D
+
+1. Lade Beispiel D5 in X-TOY. Führe es mit `Step` aus und beobachte wie sich PC, RA und RB bei jedem Schritt ändern.
+2. Was passiert in D5 wenn du `0000` als Eingabe gibst? (N=0)
+3. Was passiert in D4 (Potenzen von 2) mit `FFFF` als Startwert in Adresse 00?
+4. Verändere D6 so dass statt `mem[0A]` und `mem[0B]` die Werte von stdin gelesen werden.
+
+---
+
+### 📝 Aufgabe D1 – Maximum zweier Zahlen
+
+Implementiere in X-TOY ein Programm das zwei Zahlen aus stdin liest und die größere auf stdout ausgibt.
+
+```
+stdin:  0005  0009  →  stdout: 0009
+stdin:  0042  0007  →  stdout: 0042
+stdin:  0003  0003  →  stdout: 0003
+
+Hinweis: Berechne die Differenz (a - b).
+         Wenn das Ergebnis positiv ist: a > b
+         Wenn das Ergebnis 0 ist: a = b
+         (Achtung: "branch positive" reagiert NICHT auf 0!)
+```
+
+Schreibe den TOY-Code als Tabelle:
+
+```
+Adresse  Wert    Bedeutung
+─────────────────────────────────────────────
+10:      ????    ...
+11:      ????    ...
+...
+```
+
+---
+
+### 📝 Aufgabe D2 – Primzahltest (anspruchsvoll)
+
+Implementiere in X-TOY: Lese eine Zahl N aus stdin. Gib `0001` aus wenn N eine Primzahl ist, sonst `0000`.
+
+**Strategie:**
+- Teste ob N durch 2, 3, 4, ..., N-1 teilbar ist
+- Teilbarkeit: N mod d = 0 (aber TOY hat kein MOD!) → mod per wiederholter Subtraktion
+- Wenn kein Teiler gefunden → Primzahl
+
+```
+Hinweis für mod:
+  N mod d = Rest nach wiederholter Subtraktion von d:
+  Solange (N >= d): N = N - d
+  Rest = N  (wenn Rest 0 → teilbar)
+```
+
+---
+
+### 📝 Aufgabe D3 – Fibonacci
+
+Lese N aus stdin. Gib die erste N Fibonacci-Zahlen auf stdout aus.
+
+```
+N = 0008 → 0000  0001  0001  0002  0003  0005  0008  000D
+```
+
+---
+
+---
+
+## Block E: Von TOY zu echter Assembly – x86 NASM
+
+### 📖 Theorie
+
+#### Der Schritt von TOY zu echter Assembly
+
+Du hast in TOY Maschinencode in Hex-Zellen eingetippt: `8AFF`, `1CAB`, `0000`. Das ist exakt was ein echter Prozessor versteht – nur mit anderen Zahlen und anderen Regeln.
+
+Der nächste historische Schritt war: Statt Zahlen schreibt man **symbolische Namen** für Befehle. Ein Programm – der **Assembler** – übersetzt diese Namen automatisch in die richtigen Bytes. Das ist Assembly.
+
+```
+TOY (Maschinencode, Hex):      x86 Assembly (NASM-Syntax):
+──────────────────────────     ──────────────────────────────
+10: 8AFF  (load stdin→RA)      mov rax, 0        ; syscall: read
+11: 8BFF  (load stdin→RB)      ...
+12: 1CAB  (RA+RB→RC)           add rax, rbx
+13: 9CFF  (RC→stdout)          ...
+14: 0000  (halt)               mov rax, 60       ; syscall: exit
+                               syscall
+```
+
+**Was sich ändert – was gleich bleibt:**
+
+| Konzept | In TOY | In x86 Assembly |
+|---------|--------|----------------|
+| Register | R0–RF (16 Stück, 16-Bit) | rax, rbx, rcx, rdx, ... (64-Bit) |
+| Speicher laden | `8A30` (opcode + addr) | `mov rax, [0x30]` |
+| Addieren | `1CAB` (opcode d s t) | `add rax, rbx` |
+| Bedingter Sprung | `CA13` (branch zero) | `je label` (jump if equal/zero) |
+| Unbedingter Sprung | `C013` (via R0=0) | `jmp label` |
+| I/O | Adresse `FF` lesen/schreiben | Betriebssystem-Aufruf (syscall) |
+| Halt | `0000` | `mov rax, 60` + `syscall` |
+
+Das Konzept ist identisch. Die Syntax ist anders. Und x86 hat Jahrzehnte an Komplexität obendrauf – deshalb war TOY zuerst.
+
+---
+
+#### x86-64: Die Register
+
+Moderne x86-64-Prozessoren haben mehr und größere Register als TOY. Dieselben Register können in verschiedenen Größen angesprochen werden – ein historisches Überbleibsel:
+
+```
+64-Bit:  rax   rbx   rcx   rdx   rsi   rdi   rsp   rbp
+32-Bit:  eax   ebx   ecx   edx   esi   edi   esp   ebp
+16-Bit:   ax    bx    cx    dx    si    di    sp    bp
+ 8-Bit:   al    bl    cl    dl   ...
+
+RAX ist 64 Bit:
+┌────────────────────────────────────────────────────────────────┐
+│                            RAX (64 Bit)                       │
+│                        ┌──────────────────┐                   │
+│                        │    EAX (32 Bit)  │                   │
+│                        │       ┌──────────┤                   │
+│                        │       │ AX(16Bt) │                   │
+│                        │       │  AH │ AL │                   │
+└────────────────────────────────────────────────────────────────┘
+
+Warum das so ist: 1978 gab es 16-Bit-Register (AX).
+1985 wurden sie auf 32 Bit erweitert (EAX).
+2003 auf 64 Bit (RAX). Alles rückwärtskompatibel.
+```
+
+**Wichtige Spezialregister:**
+
+| Register | Bedeutung |
+|----------|-----------|
+| `rsp` | Stack Pointer – zeigt auf den obersten Stack-Eintrag |
+| `rbp` | Base Pointer – Basis des aktuellen Stack-Frames |
+| `rip` | Instruction Pointer – entspricht dem PC in TOY |
+| `rflags` | Flags-Register – enthält Zero Flag, Carry Flag, etc. (entspricht den Bedingungen für branch in TOY) |
+
+---
+
+#### Wichtige x86-Befehle
+
+**Datenbewegung:**
+
+| Befehl | Bedeutung | TOY-Entsprechung |
+|--------|-----------|-----------------|
+| `mov rax, 5` | rax = 5 | `7A05` (load address) |
+| `mov rax, [rbx]` | rax = mem[rbx] | `AC0B` (load indirect) |
+| `mov [rax], rbx` | mem[rax] = rbx | `BB0A` (store indirect) |
+| `push rax` | Stack: rax ablegen | – (kein direktes Äquivalent) |
+| `pop rax` | Stack: oberstes Element → rax | – |
+
+**Arithmetik & Logik:**
+
+| Befehl | Bedeutung | TOY-Entsprechung |
+|--------|-----------|-----------------|
+| `add rax, rbx` | rax = rax + rbx | `1AB...` |
+| `sub rax, rbx` | rax = rax - rbx | `2AB...` |
+| `imul rax, rbx` | rax = rax × rbx | (kein direktes TOY-Äquivalent) |
+| `and rax, rbx` | rax = rax & rbx | `3AB...` |
+| `xor rax, rbx` | rax = rax ^ rbx | `4AB...` |
+| `shl rax, 2` | rax = rax << 2 | `5A..` |
+| `shr rax, 2` | rax = rax >> 2 | `6A..` |
+
+**Vergleich und Sprünge:**
+
+| Befehl | Bedeutung | TOY-Entsprechung |
+|--------|-----------|-----------------|
+| `cmp rax, rbx` | Vergleich (setzt Flags, ändert nichts) | implizit vor branch |
+| `je label` | Sprung wenn gleich (Zero Flag) | `CA addr` |
+| `jne label` | Sprung wenn ungleich | invertiertes `CA` |
+| `jg label` | Sprung wenn größer | `DA addr` |
+| `jl label` | Sprung wenn kleiner | – |
+| `jmp label` | Unbedingter Sprung | `C0 addr` (via R0=0) |
+| `call func` | Funktion aufrufen (speichert return addr) | `FF addr` (jump & link) |
+| `ret` | Aus Funktion zurück | `EF 00` (jump register) |
+
+---
+
+### 💻 Beispiel E1: Hallo Welt in x86-64 Assembly
+
+Assembly-Code kann man **nicht einfach doppelklicken**. Er muss erst assembliert (in Maschinencode übersetzt) und dann gelinkt werden. Auf Linux:
+
+```bash
+# Schritt 1: Assemblieren (.asm → .o Objektdatei)
+nasm -f elf64 hallo.asm -o hallo.o
+
+# Schritt 2: Linken (.o → ausführbare Binary)
+ld hallo.o -o hallo
+
+# Schritt 3: Ausführen
+./hallo
+```
+
+Das entspricht dem was der TOY-Emulator automatisch macht wenn du „Run" drückst – nur dass dort kein Betriebssystem involviert ist.
+
+Anonsten kann der Code auch auf https://onecompiler.com/assembly ausprobiert werden (dort direkt „Run“ drücken, kein Linken und Kompilieren nötig).
+
+```nasm
+; hallo.asm – "Hallo Welt" ohne C-Bibliothek
+; Direkte Linux-Systemaufrufe (syscalls) – wie TOY's Adresse FF für I/O
+
+section .data
+    nachricht db "Hallo Welt!", 10    ; 10 = Newline-Byte (\n)
+    laenge    equ $ - nachricht        ; Länge automatisch berechnen
+
+section .text
+    global _start        ; Einstiegspunkt für den Linker
+
+_start:
+    ; ── Systemaufruf: write(stdout, nachricht, laenge) ──
+    ; Linux erwartet Argumente in bestimmten Registern:
+    mov rax, 1           ; Syscall-Nummer 1 = sys_write
+    mov rdi, 1           ; Argument 1: Dateideskriptor 1 = stdout
+    mov rsi, nachricht   ; Argument 2: Zeiger auf den Text
+    mov rdx, laenge      ; Argument 3: Anzahl Bytes
+    syscall              ; Kernel aufrufen!
+
+    ; ── Systemaufruf: exit(0) ────────────────────────────
+    mov rax, 60          ; Syscall-Nummer 60 = sys_exit
+    mov rdi, 0           ; Exitcode 0 = Erfolg
+    syscall
+```
+
+**Vergleich mit TOY:**
+
+```
+TOY I/O:                     x86 I/O:
+────────────────────────     ──────────────────────────────────────
+8AFF  → R[A] = stdin         mov rdi, 0        (stdin = fd 0)
+9AFF  → stdout = R[A]        mov rax, 1        (sys_write)
+                             syscall
+
+In TOY ist I/O eine spezielle Speicheradresse (FF).
+In x86 ist I/O ein Betriebssystem-Aufruf (syscall mit Nummer).
+Das Konzept: dieselbe Idee, andere Mechanik.
+```
+
+---
+
+### 💻 Beispiel E2: Addition zweier Zahlen – TOY vs. x86
+
+Dasselbe Programm (D1 aus dem TOY-Block) jetzt in x86-Assembly:
+
+**TOY (Erinnerung):**
+```
+00: 0005    Datenwert 5
+01: 0008    Datenwert 8
+10: 8A00    R[A] ← mem[00]
+11: 8B01    R[B] ← mem[01]
+12: 1CAB    R[C] ← R[A] + R[B]
+13: 9C02    mem[02] ← R[C]
+14: 0000    halt
+```
+
+**x86-64 NASM (konzeptuell identisch):**
+```nasm
+; addition.asm
+section .data
+    zahl_a  dq 5          ; dq = define quadword (64-Bit Zahl)
+    zahl_b  dq 8
+    ergebnis dq 0
+
+section .text
+    global _start
+
+_start:
+    ; Entspricht TOY: R[A] ← mem[00]
+    mov rax, [zahl_a]     ; rax = 5
+
+    ; Entspricht TOY: R[B] ← mem[01]
+    mov rbx, [zahl_b]     ; rbx = 8
+
+    ; Entspricht TOY: R[C] ← R[A] + R[B]
+    add rax, rbx          ; rax = rax + rbx = 13
+
+    ; Entspricht TOY: mem[02] ← R[C]
+    mov [ergebnis], rax   ; Ergebnis speichern
+
+    ; Entspricht TOY: halt
+    mov rax, 60
+    mov rdi, 0
+    syscall
+```
+
+---
+
+### 💻 Beispiel E3: Schleife – Summe 1 bis N
+
+Dieses Beispiel entspricht TOY-Beispiel D5. Hier sieht man deutlich die parallele Struktur:
+
+```nasm
+; summe_n.asm
+; Berechnet 1 + 2 + ... + N (N ist fest eingebaut als 10)
+
+section .text
+    global _start
+
+_start:
+    mov rcx, 10          ; Zähler i = N = 10    (wie TOY: R[A] = N)
+    mov rax, 0           ; Summe = 0             (wie TOY: R[B] = 0)
+
+.schleife:               ; Label = Sprungziel (wie TOY-Adresse 13)
+    cmp rcx, 0           ; Vergleiche i mit 0
+    je  .fertig          ; wenn i == 0: fertig   (wie TOY: CA17)
+
+    add rax, rcx         ; summe += i            (wie TOY: 1BAB)
+    dec rcx              ; i--                   (wie TOY: 2AA1)
+    jmp .schleife        ; zurück zur Schleife   (wie TOY: C013)
+
+.fertig:
+    ; rax enthält jetzt die Summe (55)
+    mov rdi, rax         ; Exitcode = Ergebnis (sichtbar mit: echo $?)
+    mov rax, 60
+    syscall
+```
+
+**Ausführen und Ergebnis prüfen:**
+```bash
+nasm -f elf64 summe_n.asm -o summe_n.o
+ld summe_n.o -o summe_n
+./summe_n
+echo $?      # Gibt den Exitcode aus → 55
+```
+
+> Wir nutzen hier einen Trick: Das Ergebnis (55) wird als Exitcode zurückgegeben. Mit `echo $?` liest man ihn aus. Für echte Ausgabe bräuchten wir printf – was eine C-Bibliothek erfordert.
+
+---
+
+### 💻 Beispiel E4: Mit C-Bibliothek – printf aus Assembly aufrufen
+
+Die meisten echten Assembly-Programme rufen C-Bibliotheksfunktionen auf, statt alles selbst zu machen:
+
+```nasm
+; printf_beispiel.asm
+; Ruft printf() aus der C-Standardbibliothek auf
+
+section .data
+    format  db "Ergebnis: %d", 10, 0   ; printf-Formatstring, 0 = Nullterminierung
+
+section .text
+    extern printf          ; printf kommt aus der C-Bibliothek
+    global main            ; main statt _start (wegen C-Bibliothek)
+
+main:
+    push rbp               ; Stack-Frame aufbauen (Konvention!)
+    mov  rbp, rsp
+
+    ; printf("Ergebnis: %d\n", 42)
+    ; Linux x86-64 Aufrufkonvention:
+    ;   rdi = 1. Argument (Formatstring)
+    ;   rsi = 2. Argument (die Zahl)
+    mov rdi, format        ; 1. Argument: Formatstring
+    mov rsi, 42            ; 2. Argument: die Zahl
+    xor rax, rax           ; rax = 0 (keine Float-Argumente)
+    call printf            ; Funktionsaufruf
+
+    xor rax, rax           ; return 0
+    pop rbp
+    ret
+
+; Kompilieren mit gcc (nicht ld!) wegen C-Bibliothek:
+; nasm -f elf64 printf_beispiel.asm -o printf_beispiel.o
+; gcc printf_beispiel.o -o printf_beispiel -no-pie
+; ./printf_beispiel
+; → Ergebnis: 42
+```
+
+**Aufrufkonvention** – das ist ein wichtiges Konzept: x86-64 Linux legt fest in welcher Reihenfolge Argumente in Register gelegt werden: `rdi`, `rsi`, `rdx`, `rcx`, `r8`, `r9` (dann Stack). Das ist nicht willkürlich – Compiler und Betriebssystem müssen sich darauf einigen.
+
+---
+
+### 🖥️ Assembly ausführen – drei Wege
+
+#### Weg 1: Godbolt (empfohlen für Einsteiger – kein Setup nötig)
+
+**► https://godbolt.org**
+
+Godbolt zeigt Assembly nicht direkt ausführbar, aber du siehst live wie C-Code in Assembly übersetzt wird. Das ist der schnellste Weg um Assembly zu lesen und zu verstehen.
+
+1. Öffne Godbolt, wähle `x86-64 gcc`
+2. Gib C-Code ein, sieh den Assembly-Output rechts
+3. Wechsle zwischen `-O0` und `-O2` um Optimierungen zu beobachten
+
+#### Weg 2: Online-Assembler (im Browser ausführen)
+
+**► https://asm.x32.dev/** – schreibe x86-Assembly, führe es direkt im Browser aus
+
+**► https://onecompiler.com/assembly** – unterstützt NASM mit stdin/stdout
+
+Für einfache Programme (ohne Systemaufrufe) der schnellste Weg.
+
+#### Weg 3: Lokal auf Linux / WSL (für vollständige Programme)
+
+Wenn du auf Windows arbeitest: **WSL** (Windows Subsystem for Linux) installieren → dann echtes Linux im Terminal.
+
+```bash
+# Tools installieren (einmalig):
+sudo apt install nasm gcc
+
+# Programm assemblieren und ausführen:
+nasm -f elf64 programm.asm -o programm.o
+ld programm.o -o programm          # für reine Assembly ohne C-Lib
+./programm
+
+# Mit C-Bibliothek (printf etc.):
+nasm -f elf64 programm.asm -o programm.o
+gcc programm.o -o programm -no-pie
+./programm
+```
+
+**Auf macOS:** Die Syscall-Nummern sind anders (macOS nutzt andere Nummern als Linux). Für macOS-Assembly muss man die Syscall-Tabelle anpassen, oder man nutzt die C-Bibliothek (dann portabler).
+
+---
+
+### 💻 Beispiel E5: Godbolt – C zu Assembly verstehen
+
+Das ist der einfachste Einstieg: C schreiben, Assembly lesen, verstehen was der Compiler macht.
+
+**Öffne https://godbolt.org, wähle `x86-64 gcc -O0`, gib ein:**
+
+```c
+int addiere(int a, int b) {
+    return a + b;
+}
+```
+
+**Was du siehst (vereinfacht):**
+```nasm
+addiere:
+    push    rbp
+    mov     rbp, rsp
+    mov     DWORD PTR [rbp-4], edi    ; Parameter a auf Stack
+    mov     DWORD PTR [rbp-8], esi    ; Parameter b auf Stack
+    mov     edx, DWORD PTR [rbp-4]   ; a in edx
+    mov     eax, DWORD PTR [rbp-8]   ; b in eax
+    add     eax, edx                  ; eax = a + b
+    pop     rbp
+    ret                               ; Rückgabewert liegt in eax
+```
+
+**Jetzt mit `-O2`:**
+```nasm
+addiere:
+    lea     eax, [rdi+rsi]    ; eax = rdi + rsi  (1 Instruktion!)
+    ret
+```
+
+Der Compiler weiß: `a` liegt in `rdi`, `b` liegt in `rsi` (Aufrufkonvention). Er berechnet direkt das Ergebnis, kein Stack-Overhead. Das ist Optimierung.
+
+**Jetzt eine Schleife:**
+```c
+int summe(int n) {
+    int s = 0;
+    for (int i = 1; i <= n; i++) s += i;
+    return s;
+}
+```
+
+Mit `-O2` reduziert GCC das auf die **Gaußsche Summenformel** `n*(n+1)/2` – der Compiler erkennt das Muster und eliminiert die Schleife komplett!
+
+---
+
+### 🔬 Ausprobieren E
+
+1. Öffne Godbolt. Schreibe eine `if`-Abfrage in C und identifiziere im Assembly welche `j`-Instruktion (Sprung) dafür verwendet wird.
+2. Schreibe in C eine Funktion die zwei Zahlen vergleicht und die größere zurückgibt. Welche Assembly-Instruktionen entsprechen dem Vergleich?
+3. Wechsle in Godbolt von `x86-64 gcc` auf `ARM64 gcc`. Ändert sich der C-Code? Was ändert sich am Assembly?
+4. Versuche Beispiel E3 auf onecompiler.com auszuführen. Was gibt `echo $?` aus?
+
+---
+
+### 📝 Aufgabe E – TOY → Assembly übersetzen
+
+Du kennst bereits dieses TOY-Programm (D5: Summe 1 bis N). Übersetze es in x86-64 NASM Assembly:
+
+```
+TOY:
+10: 8AFF    R[A] ← stdin
+11: 7B00    R[B] ← 0
+12: 7101    R[1] ← 1
+13: CA17    if R[A]==0 → 17
+14: 1BAB    R[B] += R[A]
+15: 2AA1    R[A] -= R[1]
+16: C013    → 13
+17: 9BFF    stdout ← R[B]
+18: 0000    halt
+```
+
+```nasm
+; deine_loesung_e.asm
+; Übersetze das TOY-Programm nach x86-64 NASM
+; Nutze: mov, add, sub, cmp, je, jmp, syscall
+; N soll fest auf 10 gesetzt sein (kein stdin nötig)
+; Das Ergebnis als Exitcode zurückgeben (sichtbar mit echo $?)
+
+section .text
+    global _start
+
+_start:
+    ; TODO: Initialisierung (N und Summe)
+
+    ; TODO: Schleife mit Label und Sprung
+
+    ; TODO: exit(summe)
+    mov rax, 60
+    ; mov rdi, ???    ← hier das Ergebnis eintragen
+    syscall
+```
+
+---
+
+## Block F: Kompiliert vs. Interpretiert
+
+### 📖 Theorie
+
+Du hast jetzt erlebt wie TOY-Maschinencode aussieht. Jetzt kommt die entscheidende Frage: Wie kommen höhere Programmiersprachen (Python, C, Java) zu diesem Maschinencode?
+
+#### Das Problem
+
+Die CPU (oder TOY) versteht nur Maschinencode – rohe Zahlen. Ein Python-Programm wie `print("Hallo")` ist für eine CPU bedeutungsloser Text. Es muss irgendwie in Maschinencode umgewandelt werden.
+
+Es gibt zwei grundlegend verschiedene Wege:
+
+---
+
+#### Weg 1: Kompilierung
+
+Ein **Compiler** liest den gesamten Quellcode **vor der Ausführung** und übersetzt ihn komplett in Maschinencode. Das Ergebnis: eine ausführbare Datei.
+
+```
+hello.c (Quellcode)
+      │
+      ▼   gcc (Compiler) – passiert EINMAL vor der Ausführung
+      │   [Preprocessing] → [Kompilierung] → [Assemblierung] → [Linken]
+      ▼
+hello  (Maschinencode-Datei, z.B. .exe)
+      │
+      ▼   CPU führt direkt aus
+      │
+  Ausgabe
+```
+
+**Was der Compiler genau macht:**
+
+```
+1. Preprocessing:  #include, #define expandieren
+2. Kompilierung:   C → Assembly-Code (für die Ziel-CPU)
+3. Assemblierung:  Assembly → Maschinencode (Objektdatei .o)
+4. Linken:         Mehrere .o-Dateien + Libraries → fertige Binary
+```
+
+Vorteile:
+- Sehr schnell zur Laufzeit (kein Overhead)
+- Optimierungen möglich (Compiler kennt gesamten Code)
+- Kein Interpreter auf Zielrechner nötig
+
+Nachteile:
+- Muss für jede CPU-Architektur neu kompiliert werden (x86 ≠ ARM ≠ RISC-V)
+- Längerer Entwicklungszyklus (Code → Kompilieren → Testen)
+
+**Kompilierte Sprachen:** C, C++, Rust, Go, Fortran
+
+---
+
+#### Weg 2: Interpretation
+
+Ein **Interpreter** liest den Quellcode **während der Ausführung**, Zeile für Zeile, und führt ihn sofort aus. Es entsteht keine separate ausführbare Datei.
+
+```
+hello.py (Quellcode)
+      │
+      ▼   python3 (Interpreter) – Übersetzung passiert WÄHREND der Ausführung
+      │   Liest Zeile 1 → übersetzt → führt aus
+      │   Liest Zeile 2 → übersetzt → führt aus
+      │   ...
+      ▼
+  Ausgabe
+```
+
+Vorteile:
+- Plattformunabhängig (läuft überall wo der Interpreter installiert ist)
+- Kein Kompilierungsschritt → schnellere Entwicklung
+- Dynamisch: Code kann sich selbst ändern
+
+Nachteile:
+- Langsamer (Interpreter-Overhead bei jeder Zeile)
+- Interpreter muss auf Zielrechner installiert sein
+
+**Interpretierte Sprachen:** Python, Ruby, PHP, Bash, (frühes) JavaScript
+
+---
+
+#### Weg 3: Bytecode + virtuelle Maschine (Mittelweg)
+
+Java, C# und Python (intern) gehen einen Zwischenweg:
+
+```
+hello.java (Quellcode)
+      │
+      ▼   javac (Compiler)
+      │
+hello.class (Bytecode – plattformunabhängiger Zwischencode)
+      │
+      ▼   JVM (Java Virtual Machine)
+      │   – interpretiert Bytecode ODER
+      │   – JIT-Compiler: übersetzt "heiße" Codestellen zur Laufzeit in Maschinencode
+      ▼
+  Ausgabe
+```
+
+Bytecode ist wie TOY-Code: kein echter Maschinencode, aber viel näher dran als Quelltext. Die JVM macht dasselbe wie du in Block D: sie führt Instruktionen aus einem imaginären Befehlssatz aus.
+
+---
+
+#### Geschwindigkeitsvergleich
+
+```python
+# Python – interpretiert
+import time
+start = time.time()
+s = sum(range(1_000_000_000))
+print(f"Python: {time.time()-start:.1f}s")
+# Typisch: ~40–100 Sekunden
+```
+
+```c
+/* C – kompiliert */
+#include <stdio.h>
+#include <time.h>
+int main(void) {
+    clock_t start = clock();
+    long long s = 0;
+    for (long long i = 0; i < 1000000000LL; i++) s += i;
+    printf("C: %.1fs\n", (double)(clock()-start)/CLOCKS_PER_SEC);
+    return 0;
+}
+// Typisch: 0.3–1 Sekunde – ca. 100× schneller
+```
+
+Der Unterschied: Der C-Compiler übersetzt die Schleife direkt in ~5 Maschinencode-Instruktionen. Der Python-Interpreter muss für jede der Milliarden Iterationen die Bytecode-Instruktionen erneut auswerten.
+
+---
+
+#### Die Verbindung zu TOY
+
+Du hast in Block D echten „Maschinencode" geschrieben – für TOY. Ein C-Compiler macht dasselbe automatisch, nur für echte CPUs (x86, ARM, ...) und aus lesbarem C-Quelltext.
+
+**► Godbolt Compiler Explorer:** https://godbolt.org
+
+Hier kannst du live sehen wie GCC C-Code in x86-Assembly übersetzt – du kennst Godbolt bereits aus Block E.
+
+---
+
+### 🔬 Ausprobieren F
+
+1. Führe den Python- und den C-Geschwindigkeitsvergleich auf onlinegdb.com aus. Wie groß ist der Unterschied auf deinem Rechner?
+2. Erkläre in eigenen Worten: Warum ist Python langsamer als C, obwohl moderne Computer so schnell sind?
+3. Java und C# werden oft als „langsamer als C" bezeichnet. Warum sind sie trotzdem oft schneller als Python?
+4. Was würde passieren wenn man den Python-Interpreter selbst in Python schreiben würde?
+
+---
+
+### 📝 Aufgabe F – Klassifikation und Vergleich
+
+Klassifiziere folgende Sprachen als *kompiliert*, *interpretiert* oder *Bytecode/JVM*:
+
+| Sprache | Kategorie | Begründung |
+|---------|-----------|-----------|
+| Python | ? | ? |
+| C | ? | ? |
+| Java | ? | ? |
+| JavaScript (modern) | ? | ? |
+| C# | ? | ? |
+| Bash | ? | ? |
+| Rust | ? | ? |
+| Lua | ? | ? |
+
+Dann: Schreibe denselben Algorithmus (Fibonacci bis n=10) in Python und in C.  
+Erkläre in 3–5 Sätzen: Warum würde man für ein Betriebssystem C wählen, nicht Python?
+
+---
+
+---
+
+## Block G: Einführung in C
+
+### 📖 Geschichte
+
+**C** wurde 1972 von Dennis Ritchie bei Bell Labs entwickelt. Das Ziel war spezifisch: das Unix-Betriebssystem so zu schreiben dass es auf verschiedenen Hardwareplattformen laufen kann – ohne alles neu in Assembly zu schreiben.
+
+Bis dahin waren Betriebssysteme in Assembly geschrieben, also für jede CPU-Architektur komplett neu. C löste dieses Problem: C-Code kann für jede Architektur kompiliert werden.
+
+Das Buch **"The C Programming Language"** von Kernighan und Ritchie (1978), kurz K&R, definierte die Sprache und ist bis heute ein Klassiker. Das erste Programm darin:
+
+```c
+main()
+{
+    printf("hello, world\n");
+}
+```
+
+*(In der Version von 1978 noch ohne `int` vor `main` und ohne `#include` – die Sprache hat sich seitdem etwas weiterentwickelt.)*
+
+---
+
+### 📖 Die Verbindung zu TOY und Assembly
+
+Du hast jetzt drei Ebenen gesehen:
+
+```
+TOY-Maschinencode:   8AFF  1CAB  9CFF  0000
+                       ↕  (symbolische Namen für dieselben Bytes)
+x86 Assembly:        mov rax, [stdin]  …  add rax, rbx  …  syscall
+                       ↕  (Compiler übersetzt automatisch)
+C:                   scanf(…)  …  z = x + y;  …  printf(…)
+```
+
+C ist das direkte Bindeglied. Es abstrahiert weg:
+
+| Konzept | In TOY | In x86 Assembly | In C |
+|---------|--------|----------------|------|
+| Variable | Register (RA, RB...) | `rax`, `rbx`, ... | `int x, y;` |
+| Zuweisung | `7A05` (load address) | `mov rax, 5` | `x = 5;` |
+| Addition | `1CAB` (add) | `add rax, rbx` | `z = x + y;` |
+| Bedingung | `CA13` (branch zero) | `je label` | `if (x == 0) {...}` |
+| Schleife | Rücksprung + branch | `jmp` + `je/jg` | `while (...) {...}` |
+| Speicher lesen | `8A30` (load) | `mov rax, [addr]` | `x = array[i];` |
+| Zeiger | Register als Adresse (A/B) | Register als Adresse | `int *ptr = &x;` |
+| I/O | `8AFF` / `9AFF` | `syscall` (1/0) | `scanf(...)` / `printf(...)` |
+
+---
+
+### 💻 Beispiel G1: C-Grundstruktur
+
+```c
+/* grundstruktur.c */
+/* Jedes C-Programm beginnt mit #include-Zeilen und hat eine main()-Funktion */
+
+#include <stdio.h>    /* stdio.h: printf, scanf, etc. */
+
+int main(void) {      /* Einstiegspunkt – gibt int zurück (0 = Erfolg) */
+    
+    /* ── Datentypen ──────────────────────────────────── */
+    int    ganz     = 42;        /* 32-Bit Integer (wie TOY, nur 32 statt 16 Bit) */
+    char   zeichen  = 'A';       /* 8-Bit Zeichen */
+    float  komma    = 3.14f;     /* 32-Bit Fließkomma */
+    double genau    = 3.14159;   /* 64-Bit Fließkomma */
+    
+    /* ── Ausgabe ─────────────────────────────────────── */
+    printf("ganz = %d\n",  ganz);       /* %d = dezimale Ganzzahl */
+    printf("zeichen = %c\n", zeichen);  /* %c = Zeichen */
+    printf("hex = %X\n",   ganz);       /* %X = Hexadezimal! (wie in TOY) */
+    
+    /* ── Eingabe ─────────────────────────────────────── */
+    int eingabe;
+    printf("Gib eine Zahl ein: ");
+    scanf("%d", &eingabe);              /* & = Adresse von eingabe (Zeiger!) */
+    printf("Du hast eingegeben: %d\n", eingabe);
+    
+    return 0;     /* 0 = Programm erfolgreich beendet */
+}
+```
+
+---
+
+### 💻 Beispiel G2: Kontrollstrukturen – direkt aus TOY bekannt
+
+Jede Kontrollstruktur in C entspricht einem Muster aus TOY-Sprungbefehlen:
+
+```c
+/* kontrollstrukturen.c */
+#include <stdio.h>
+
+int main(void) {
+
+    /* ── if / else ───────────────────────────────────── */
+    /* Entspricht in TOY: CA/DA + Sprungziel              */
+    int x = 10;
+    if (x > 5) {
+        printf("x ist groesser als 5\n");
+    } else {
+        printf("x ist 5 oder kleiner\n");
+    }
+
+    /* ── for-Schleife ────────────────────────────────── */
+    /* Entspricht in TOY: Zähler + Rücksprung + branch    */
+    int summe = 0;
+    for (int i = 1; i <= 10; i++) {
+        summe += i;          /* summe = summe + i */
+    }
+    printf("Summe 1-10 = %d\n", summe);  /* Erwartet: 55 */
+
+    /* ── while-Schleife ─────────────────────────────── */
+    /* Entspricht D5 aus Block D!                         */
+    int n = 5;
+    int fakultaet = 1;
+    while (n > 0) {
+        fakultaet *= n;   /* fakultaet = fakultaet * n */
+        n--;
+    }
+    printf("5! = %d\n", fakultaet);       /* 120 */
+
+    return 0;
+}
+```
+
+---
+
+### 💻 Beispiel G3: Funktionen
+
+```c
+/* funktionen.c */
+#include <stdio.h>
+
+/* Funktionsdeklaration (Prototyp) – muss VOR der Verwendung bekannt sein */
+int addiere(int a, int b);
+int ist_primzahl(int n);
+
+int main(void) {
+    printf("%d\n", addiere(5, 8));      /* 13 */
+    
+    for (int i = 2; i <= 20; i++) {
+        if (ist_primzahl(i)) {
+            printf("%d ist eine Primzahl\n", i);
+        }
+    }
+    return 0;
+}
+
+/* Funktionsdefinition */
+int addiere(int a, int b) {
+    return a + b;
+}
+
+int ist_primzahl(int n) {
+    if (n < 2) return 0;
+    for (int i = 2; i * i <= n; i++) {
+        if (n % i == 0) return 0;   /* teilbar → keine Primzahl */
+    }
+    return 1;
+}
+```
+
+---
+
+### 💻 Beispiel G4: Arrays und Zeiger – das Herzstück von C
+
+In TOY hast du in D7 gesehen wie man einen Register als Adresse (Zeiger) auf ein Array-Element verwendet. Genau das macht C mit Zeigern – nur mit Syntax.
+
+```c
+/* zeiger.c */
+#include <stdio.h>
+
+int main(void) {
+
+    /* ── Arrays ──────────────────────────────────────── */
+    int zahlen[5] = {10, 20, 30, 40, 50};
+    
+    printf("zahlen[0] = %d\n", zahlen[0]);   /* 10 */
+    printf("zahlen[4] = %d\n", zahlen[4]);   /* 50 */
+    
+    /* ── Zeiger: die Adresse einer Variable ─────────── */
+    int x = 42;
+    int *ptr = &x;      /* ptr speichert die Adresse von x */
+                        /* Genau wie R[6] in TOY-Beispiel D7! */
+    
+    printf("Wert von x:      %d\n", x);       /* 42 */
+    printf("Adresse von x:   %p\n", (void*)&x);  /* z.B. 0x7FFF5FBD */
+    printf("Wert via Zeiger: %d\n", *ptr);    /* 42 – Dereferenzierung */
+    
+    *ptr = 100;          /* Schreibt 100 an die Adresse von x */
+    printf("x nach *ptr=100: %d\n", x);       /* 100! */
+    
+    /* ── Array und Zeiger sind in C eng verwandt ────── */
+    int *p = zahlen;    /* p zeigt auf zahlen[0] */
+    
+    printf("\nArray via Zeiger:\n");
+    for (int i = 0; i < 5; i++) {
+        printf("  *(p+%d) = %d\n", i, *(p+i));   /* Zeiger-Arithmetik! */
+    }
+    /* *(p+i) ist identisch zu zahlen[i] – das ist kein Zufall */
+    
+    return 0;
+}
+```
+
+> **Der Zusammenhang zu TOY:** In TOY D7 war `R[6] = R[A] + R[B]` ein Zeiger auf `array[n]`. In C ist `p + i` dasselbe – ein Zeiger auf `zahlen[i]`. Die Idee ist identisch, nur die Syntax unterscheidet sich.
+
+---
+
+### 💻 Beispiel G5: TOY-Programme in C nachbauen
+
+Jetzt der direkte Vergleich – dasselbe Programm in TOY und in C:
+
+**D5: Summe 1 bis N**
+
+```
+TOY:                        C:
+────────────────────        ────────────────────────────────
+10: 8AFF  R[A]←stdin       int n;
+11: 7B00  R[B]←0           scanf("%X", &n);    // hex input
+12: 7101  R[1]←1           int summe = 0;
+13: CA17  if A=0→17        int i = n;
+14: 1BAB  B+=A             while (i > 0) {
+15: 2AA1  A-=1                 summe += i;
+16: C013  →13                  i--;
+17: 9BFF  stdout←B         }
+18: 0000  halt             printf("%X\n", summe); // hex output
+```
+
+```c
+/* summe_n.c – exakte C-Entsprechung von TOY-Beispiel D5 */
+#include <stdio.h>
+
+int main(void) {
+    int n;
+    scanf("%d", &n);
+    
+    int summe = 0;
+    int i = n;
+    while (i > 0) {
+        summe += i;
+        i--;
+    }
+    
+    printf("%d\n", summe);
+    return 0;
+}
+```
+
+**Oder eleganter in C (was TOY nicht direkt kann):**
+
+```c
+int main(void) {
+    int n;
+    scanf("%d", &n);
+    int summe = 0;
+    for (int i = 1; i <= n; i++) {
+        summe += i;
+    }
+    printf("%d\n", summe);
+    return 0;
+}
+```
+
+---
+
+### 🔬 Ausprobieren G
+
+1. Öffne https://www.onlinegdb.com/online_c_compiler und tippe Beispiel G2 ein. Führe es aus.
+2. Ändere die Schleife in G2 so dass sie die Quadratsumme berechnet: 1² + 2² + ... + 10².
+3. Schreibe in C die Funktion `int max(int a, int b)` die das Maximum zweier Zahlen zurückgibt – entsprechend TOY-Aufgabe D1.
+4. Öffne Godbolt und gib G3 (`ist_primzahl`) ein. Mit `-O0`: Wie viele Assembly-Instruktionen hat die Schleife? Mit `-O2`: Was optimiert der Compiler?
+
+---
+
+### 📝 Aufgabe G1 – TOY → C Übersetzung
+
+Übersetze folgendes TOY-Programm in C. Kommentiere jede Zeile.
+
+```
+Adresse  Wert    
+───────────────
+10:      8AFF    
+11:      8BFF    
+12:      2CAB    
+13:      DC15    
+14:      7C00    
+15:      1CAC    
+16:      9CFF    
+17:      0000    
+```
+
+```c
+/* deine_loesung_g1.c */
+#include <stdio.h>
+
+int main(void) {
+    // TODO: Übersetze das TOY-Programm
+    // Was macht dieses Programm?
+    
+    return 0;
+}
+```
+
+---
+
+### 📝 Aufgabe G2 – Abschlussprojekt: Zahlenraten
+
+Implementiere das klassische Zahlenraten-Spiel in C:
+
+```c
+/* zahlenraten.c */
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+/*
+   Anforderungen:
+   - Computer denkt sich eine Zahl zwischen 1 und 100
+   - Spieler rät – bekommt "zu groß" / "zu klein" / "richtig!"
+   - Zählt die Versuche
+   - Fragt am Ende ob nochmal gespielt werden soll
+   - Zufallszahl: srand(time(NULL)); rand() % 100 + 1
+*/
+
+int spielrunde(void) {
+    // TODO: eine Spielrunde, gibt Anzahl Versuche zurück
+    return 0;
+}
+
+int main(void) {
+    srand(time(NULL));
+    // TODO: Hauptschleife mit Wiederholung
+    return 0;
+}
+```
+
+---
+
+## ✅ Abschluss-Checkliste
+
+```
+Beantworte schriftlich (als Kommentare in einer .c Datei oder .txt):
+
+1. Nenne drei Programmiersprachen aus verschiedenen Jahrzehnten.
+   Warum wurde jede davon entwickelt? Was war der konkrete Anlass?
+
+2. Du hast in X-TOY Maschinencode als Hex-Zellen eingegeben.
+   Erkläre den Unterschied zu Assembly (NASM).
+   Was macht ein Assembler? Was macht ein Compiler?
+
+3. Erkläre den Fetch-Execute-Zyklus an einem konkreten TOY-Beispiel.
+   Welche Werte hat PC, welche Instruktion wird ausgeführt,
+   welche Register ändern sich?
+
+4. Zeige anhand je eines Codebeispiels wie eine for-Schleife
+   in TOY, in x86 Assembly und in C aussieht.
+   Was bleibt konzeptuell gleich?
+
+5. Was ist der Unterschied zwischen einem kompilierten und einem
+   interpretierten Programm? Nenne je ein reales Beispiel.
+
+6. Erkläre den Zusammenhang zwischen TOY-Opcode A (load indirect),
+   x86-Assembly mit [Register] und einem C-Zeiger.
+   Was haben alle drei gemeinsam?
+```
+
+---
+
+## 📚 Ressourcen
+
+| Ressource | Link | Wofür |
+|-----------|------|-------|
+| **Visual X-TOY Download** | https://lift.cs.princeton.edu/xtoy/ | Hauptwerkzeug (Blöcke C & D) |
+| **TOY Machine Reference** | https://introcs.cs.princeton.edu/java/62toy/ | Vollständige TOY-Dokumentation |
+| **TOY Programming Examples** | https://introcs.cs.princeton.edu/java/63programming/ | Alle Beispielprogramme von Princeton |
+| **TOY Cheatsheet** | https://introcs.cs.princeton.edu/java/11cheatsheet-toy | Kurzreferenz (ausdrucken!) |
+| **Godbolt Compiler Explorer** | https://godbolt.org | C → Assembly live, ARM vs. x86 (Block E & G) |
+| **Online NASM Assembler** | https://asm.x32.dev/ | Assembly direkt im Browser ausführen (Block E) |
+| **OneCompiler Assembly** | https://onecompiler.com/assembly | NASM mit stdin/stdout online |
+| **OnlineGDB – C Compiler** | https://www.onlinegdb.com/online_c_compiler | C ohne Installation ausprobieren (Block G) |
+| **CS50x (Harvard)** | https://cs50.harvard.edu/x | Freier Kurs, beginnt mit C |
+| **History of Programming Languages** | https://hopl.info/ | Sprachhistorie recherchieren (Block A) |
